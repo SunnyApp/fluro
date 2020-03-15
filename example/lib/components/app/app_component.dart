@@ -20,10 +20,12 @@ class AppComponent extends StatefulWidget {
 }
 
 class AppComponentState extends State<AppComponent> {
-  AppComponentState() {
-    final router = Router();
-    Routes.configureRoutes(router);
-    Application.router = router;
+  AppComponentState();
+
+  @override
+  void initState() {
+    super.initState();
+    Routes(Application.router);
   }
 
   @override
@@ -34,7 +36,7 @@ class AppComponentState extends State<AppComponent> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      onGenerateRoute: Application.router.generator,
+      onGenerateRoute: Application.router.onGenerateRoute,
     );
 //    print("initial route = ${app.initialRoute}");
     return app;

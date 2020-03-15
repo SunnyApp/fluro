@@ -7,26 +7,28 @@
  * See LICENSE for distribution and usage details.
  */
 import 'package:fluro/fluro.dart';
-import 'package:flutter/material.dart';
-import './route_handlers.dart';
+import 'package:router_example/config/route_handlers.dart';
 
 class Routes {
-  static String root = "/";
-  static String demoSimple = "/demo";
-  static String demoSimpleFixedTrans = "/demo/fixedtrans";
-  static String demoFunc = "/demo/func";
-  static String deepLink = "/message";
+  static Routes instance;
+  final Router router;
+  static const String root = '/';
+  static const String demoSimple = '/demo';
+  static const String demoSimpleFixedTrans = '/demo/fixedtrans';
+  static const String demoFunc = '/demo/func';
+  static const String deepLink = '/message';
 
-  static void configureRoutes(Router router) {
-    router.notFoundHandler = Handler(
-        handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-      print("ROUTE WAS NOT FOUND !!!");
-    });
-    router.define(root, handler: rootHandler);
-    router.define(demoSimple, handler: demoRouteHandler);
-    router.define(demoSimpleFixedTrans,
-        handler: demoRouteHandler, transitionType: TransitionType.inFromLeft);
-    router.define(demoFunc, handler: demoFunctionHandler);
-    router.define(deepLink, handler: deepLinkHandler);
-  }
+  final AppRoute rootRoute;
+  final AppRoute demoSimpleRoute;
+  final AppRoute demoSimpleFixedTransRoute;
+  final AppRoute demoFuncRoute;
+  final AppRoute deepLinkRoute;
+
+  Routes(this.router)
+      : rootRoute = router.define(root, handler: rootHandler),
+        demoSimpleRoute = router.define(demoSimple, handler: demoRouteHandler),
+        demoSimpleFixedTransRoute =
+            router.define(demoSimpleFixedTrans, handler: demoRouteHandler, transitionType: TransitionType.inFromLeft),
+        demoFuncRoute = router.defineCompletable(demoFunc, handler: demoFunctionHandler),
+        deepLinkRoute = router.define(deepLink, handler: deepLinkHandler);
 }

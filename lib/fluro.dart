@@ -8,6 +8,8 @@
  */
 library fluro;
 
+export 'src/app_route.dart';
 export 'src/common.dart';
-export 'src/router.dart';
+export 'src/completable_route.dart';
+export 'src/routes.dart';
 export 'src/tree.dart';

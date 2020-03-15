@@ -9,8 +9,7 @@
 import 'package:flutter/material.dart';
 
 class DemoMessageComponent extends StatelessWidget {
-  DemoMessageComponent(
-      {@required this.message, this.color = const Color(0xFFFFFFFF)});
+  DemoMessageComponent({@required this.message, this.color = const Color(0xFFFFFFFF)});
 
   final String message;
   final Color color;
@@ -18,12 +17,12 @@ class DemoMessageComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: this.color,
+      color: color,
       child: Center(
         child: Text(
           message,
           style: TextStyle(
-            fontFamily: "Lazer84",
+            fontFamily: 'Lazer84',
           ),
         ),
       ),

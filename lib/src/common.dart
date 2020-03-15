@@ -7,36 +7,42 @@
  * See LICENSE for distribution and usage details.
  */
 
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 
+import 'app_route.dart';
+
 ///
-enum HandlerType {
-  route,
-  function,
+typedef Route<T> RouteCreator<T, P>(String name, P parameters);
+
+typedef Future<R> RouteExecutor<R>();
+
+/// This class is responsible for providing a [RouteCreator] for a static [AppRoute].  You would use this if you want/
+/// need to fully customize the `Route`, or if you use a specialized `Route` subclass.
+abstract class RouterFactory {
+  RouteCreator<R, P> generate<R, P>(
+    AppRoute<R, P> appRoute,
+    TransitionType transition,
+    Duration transitionDuration,
+    RouteTransitionsBuilder transitionsBuilder,
+  );
 }
 
-///
-class Handler {
-  Handler({this.type = HandlerType.route, this.handlerFunc});
-  final HandlerType type;
-  final HandlerFunc handlerFunc;
-}
+/// Used by [CompletableAppRoute]
+typedef Future<R> CompletableHandler<R, P>(BuildContext context, P parameters);
 
-///
-typedef Route<T> RouteCreator<T>(
-    RouteSettings route, Map<String, List<String>> parameters);
+/// Used by [AppPageRoute] Creates a widget, given [P] parameters
+typedef Widget WidgetHandler<R, P>(BuildContext context, P parameters);
 
-///
-typedef Widget HandlerFunc(
-    BuildContext context, Map<String, List<String>> parameters);
+/// Converts dynamic map arguments to a known type [P]
+typedef P ParameterConverter<P>(rawInput);
 
-///
-class AppRoute {
-  String route;
-  dynamic handler;
-  TransitionType transitionType;
-  AppRoute(this.route, this.handler, {this.transitionType});
-}
+/// Given parameters, produces a link back to this route
+typedef String ToRouteUri(Map<String, dynamic> parameters);
+
+/// Given parameters, produces a title for this route
+typedef String ToRouteTitle<P>(P parameters);
 
 enum TransitionType {
   native,
@@ -52,30 +58,71 @@ enum TransitionType {
   cupertinoFullScreenDialog,
 }
 
-enum RouteMatchType {
-  visual,
-  nonVisual,
-  noMatch,
-}
-
-///
-class RouteMatch {
-  RouteMatch(
-      {this.matchType = RouteMatchType.noMatch,
-      this.route,
-      this.errorMessage = "Unable to match route. Please check the logs."});
-  final Route<dynamic> route;
-  final RouteMatchType matchType;
-  final String errorMessage;
-}
-
 class RouteNotFoundException implements Exception {
   final String message;
   final String path;
+
   RouteNotFoundException(this.message, this.path);
 
   @override
   String toString() {
     return "No registered route was found to handle '$path'";
   }
+}
+
+extension AppRouteCastingExtensions<R, P> on AppRoute<R, P> {
+  AppPageRoute<R, P> asPageRoute() => this as AppPageRoute<R, P>;
+  CompletableAppRoute<R, P> asCompletableRoute() => this as CompletableAppRoute<R, P>;
+}
+
+/// How path parameters are extracted
+enum ParameterExtractorType {
+  /// Uses uris based on the RFC 6570 spec.
+  /// https://tools.ietf.org/html/rfc6570
+  ///
+  /// Path values are specified using curly braces, eg:
+  /// `/contacts/{id}`
+  uriTemplate,
+
+  /// URI path attributes specified by prefixing the variable name with a colon:
+  /// `/contacts/:id`
+  restTemplate
+}
+
+extension ParameterExtractorTypeExtensions on ParameterExtractorType {
+  bool isParameter(String input) {
+    if (input == null || input == "") return false;
+    if (this == null) return false;
+    switch (this) {
+      case ParameterExtractorType.uriTemplate:
+        return input.startsWith("{") && input.endsWith("}");
+      case ParameterExtractorType.restTemplate:
+        return input.startsWith(":");
+      default:
+        return false;
+    }
+  }
+
+  /// Extracts the parameter name from a path components
+  String extractName(String pathComponent) {
+    if (!this.isParameter(pathComponent)) {
+      throw InvalidRouteDefinition(code: "invalidComponentFormat");
+    }
+    switch (this) {
+      case ParameterExtractorType.uriTemplate:
+        return pathComponent.substring(1, pathComponent.length - 1);
+      case ParameterExtractorType.restTemplate:
+        return pathComponent.substring(1);
+      default:
+        return null;
+    }
+  }
+}
+
+class InvalidRouteDefinition {
+  final String message;
+  final String route;
+  final String code;
+
+  InvalidRouteDefinition({this.code, this.message, this.route});
 }
