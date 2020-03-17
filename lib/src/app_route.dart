@@ -16,6 +16,7 @@ abstract class AppRoute<R, P> {
   ParameterConverter<P> get paramConverter;
 
   String routeTitle(P params);
+  String routeUri(Map<String, dynamic> params);
 }
 
 /// An app route:
@@ -53,8 +54,14 @@ class AppPageRoute<R, P> implements AppRoute<R, P> {
   @override
   String routeTitle(params) {
     if (_toRouteTitle == null) return null;
-    final p = paramConverter(params);
+    final p = paramConverter?.call(params) ?? params;
     return _toRouteTitle(p);
+  }
+
+  @override
+  String routeUri(Map<String, dynamic> params) {
+    if (toRouteUri == null) return null;
+    return toRouteUri(params);
   }
 }
 
@@ -88,5 +95,11 @@ class CompletableAppRoute<R, P> implements AppRoute<R, P> {
     if (_toRouteTitle == null) return null;
     final p = paramConverter(params);
     return _toRouteTitle(p);
+  }
+
+  @override
+  String routeUri(Map<String, dynamic> params) {
+    if (toRouteUri == null) return null;
+    return toRouteUri(params);
   }
 }

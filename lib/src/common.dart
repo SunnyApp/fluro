@@ -18,6 +18,9 @@ typedef Route<T> RouteCreator<T, P>(String name, P parameters);
 
 typedef Future<R> RouteExecutor<R>();
 
+/// Retrieves the navigator state for this router
+typedef NavigatorState NavigatorOf(BuildContext context);
+
 /// This class is responsible for providing a [RouteCreator] for a static [AppRoute].  You would use this if you want/
 /// need to fully customize the `Route`, or if you use a specialized `Route` subclass.
 abstract class RouterFactory {

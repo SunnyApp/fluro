@@ -24,6 +24,10 @@ class Router {
   /// The tree structure that stores the defined routes
   final RouteTree _routeTree;
 
+  /// Produces a navigator given a [BuildContext].  Can be overridden to use a globalKey or some
+  /// other navigator mechanism.
+  NavigatorOf navigatorOf;
+
   /// Generic handler for when a route has not been defined
   WidgetHandler notFoundHandler;
 
@@ -31,12 +35,20 @@ class Router {
   RouterFactory routeFactory;
 
   Router(
-      {this.routeFactory = const DefaultRouterFactory(),
+      {NavigatorOf navigatorOf,
+      this.routeFactory = const DefaultRouterFactory(),
       ParameterExtractorType parameterMode = ParameterExtractorType.restTemplate})
-      : _routeTree = RouteTree(parameterMode);
+      : _routeTree = RouteTree(parameterMode),
+        navigatorOf = navigatorOf ??
+            ((context) {
+              return Navigator.of(context);
+            });
 
-  Router.ofUriTemplates({this.routeFactory = const DefaultRouterFactory()})
-      : _routeTree = RouteTree(ParameterExtractorType.uriTemplate);
+  Router.ofUriTemplates({NavigatorOf navigatorOf, this.routeFactory = const DefaultRouterFactory()})
+      : _routeTree = RouteTree(ParameterExtractorType.uriTemplate),
+        navigatorOf = navigatorOf ?? ((context) => Navigator.of(context));
+
+  List<String> get paths => _routeTree.paths;
 
   /// Registers a pre-built [AppRoute]
   AppRoute<R, P> register<R, P>(AppRoute<R, P> route) {
@@ -75,8 +87,8 @@ class Router {
   }
 
   /// Prints the route tree so you can analyze it.
-  void printTree() {
-    _routeTree.printTree();
+  String printTree({bool logToConsole = true}) {
+    return _routeTree.printTree(logToConsole: logToConsole);
   }
 }
 
@@ -138,8 +150,10 @@ extension RouterExtensions on Router {
         transitionBuilder,
       );
 
+      final navigator = navigatorOf(context);
+
       final route = routeCreator(appRoute.route, parameters);
-      return replace ? Navigator.pushReplacement(context, route) : Navigator.push(context, route);
+      return replace ? navigator.pushReplacement(route) : navigator.push(route);
     } else if (appRoute is CompletableAppRoute<R, P>) {
       return appRoute.handle(context, parameters);
     } else {
@@ -164,7 +178,9 @@ extension RouterExtensions on Router {
       );
 
       final route = routeCreator(appRoute.route, parameters);
-      return replace ? Navigator.pushReplacement(context, route) : Navigator.push(context, route);
+      final navigator = navigatorOf(context);
+
+      return replace ? navigator.pushReplacement(route) : navigator.push(route);
     } else if (appRoute is CompletableAppRoute) {
       return appRoute.handleAny(context, parameters);
     } else {

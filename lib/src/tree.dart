@@ -7,7 +7,6 @@
  * See LICENSE for distribution and usage details.
  */
 
-import 'package:fluro/fluro.dart';
 import 'package:fluro/src/common.dart';
 import 'package:flutter/widgets.dart';
 
@@ -20,7 +19,7 @@ enum RouteTreeNodeType {
 
 class AppRouteMatch {
   // constructors
-  AppRouteMatch(this.route, this.rawParams) : parameters = route.paramConverter(rawParams);
+  AppRouteMatch(this.route, this.rawParams) : parameters = route.paramConverter?.call(rawParams) ?? rawParams;
 
   AppRouteMatch.missing()
       : route = null,
@@ -82,6 +81,11 @@ class RouteTreeNodeMatch {
   // properties
   final RouteTreeNode node;
   final Map<String, dynamic> _parameters;
+
+  @override
+  String toString() {
+    return '${node.path}: ${_parameters.entries.map((e) => "${e.key}=${e.value}").join("; ")}';
+  }
 }
 
 class RouteTreeNode {
@@ -161,6 +165,7 @@ class RouteTree {
   }
 
   AppRouteMatch matchRoute(String path) {
+    if (path == null) return null;
     final uri = Uri.parse(path);
     final components = path == Navigator.defaultRouteName ? const ["/"] : uri.pathSegments;
 
@@ -206,22 +211,26 @@ class RouteTree {
     return null;
   }
 
-  void printTree() {
-    _printSubTree();
+  String printTree({bool logToConsole = true}) {
+    final _ = _printSubTree();
+    if (logToConsole) print(_);
+    return _;
   }
 
-  void _printSubTree({RouteTreeNode parent, int level = 0}) {
+  String _printSubTree({RouteTreeNode parent, int level = 0}) {
+    var str = "";
     List<RouteTreeNode> nodes = parent != null ? parent.nodes : _nodes;
     for (RouteTreeNode node in nodes) {
       String indent = "";
       for (int i = 0; i < level; i++) {
         indent += "    ";
       }
-      print("$indent${node.part}: total routes=${node.routes.length}");
+      str += "$indent${node.part}: total routes=${node.routes.length}\n";
       if (node.nodes != null && node.nodes.isNotEmpty) {
-        _printSubTree(parent: node, level: level + 1);
+        str += "${_printSubTree(parent: node, level: level + 1)}\n";
       }
     }
+    return str;
   }
 
   RouteTreeNode _nodeForComponent(String component, RouteTreeNode parent) {
@@ -244,5 +253,33 @@ class RouteTree {
       type = RouteTreeNodeType.parameter;
     }
     return type;
+  }
+}
+
+extension StringPathExt on String {
+  String toPath() {
+    final self = this ?? "/";
+    return self.startsWith("/") ? self : "/$self";
+  }
+}
+
+extension RouteTreeNodePathExt on RouteTreeNode {
+  String get path {
+    return "${parent?.path ?? ''}${part?.toPath() ?? ''}";
+  }
+
+  List<String> get paths {
+    return <String>{
+      path,
+      for (final child in (nodes ?? <RouteTreeNode>[])) ...child.paths,
+    }.toList();
+  }
+}
+
+extension RouteTreePathExt on RouteTree {
+  List<String> get paths {
+    return <String>{
+      for (final node in _nodes) ...node.paths,
+    }.toList();
   }
 }
