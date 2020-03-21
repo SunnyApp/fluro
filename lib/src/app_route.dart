@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'common.dart';
 
 /// Base class for app routes.  See [AppPageRoute] and [CompletableAppRoute]
-abstract class AppRoute<R, P> {
+abstract class AppRoute<R, P extends RouteParams> {
   /// The route template string
   String get route;
 
@@ -16,7 +16,8 @@ abstract class AppRoute<R, P> {
   ParameterConverter<P> get paramConverter;
 
   String routeTitle(P params);
-  String routeUri(Map<String, dynamic> params);
+
+  String routeUri(params);
 }
 
 /// An app route:
@@ -25,7 +26,7 @@ abstract class AppRoute<R, P> {
 /// Has a handler callback
 /// Knows how to convert raw map params into actual params
 /// Has a default transition type
-class AppPageRoute<R, P> implements AppRoute<R, P> {
+class AppPageRoute<R, P extends RouteParams> implements AppRoute<R, P> {
   final String route;
   final WidgetHandler<R, P> _handler;
   final ParameterConverter<P> paramConverter;
@@ -59,14 +60,14 @@ class AppPageRoute<R, P> implements AppRoute<R, P> {
   }
 
   @override
-  String routeUri(Map<String, dynamic> params) {
+  String routeUri(params) {
     if (toRouteUri == null) return null;
-    return toRouteUri(params);
+    return toRouteUri(RouteParams.of(params));
   }
 }
 
 /// The details of the route are opaque, it manages everything internally
-class CompletableAppRoute<R, P> implements AppRoute<R, P> {
+class CompletableAppRoute<R, P extends RouteParams> implements AppRoute<R, P> {
   final String route;
   final CompletableHandler<R, P> _handler;
   final ParameterConverter<P> paramConverter;
@@ -98,8 +99,8 @@ class CompletableAppRoute<R, P> implements AppRoute<R, P> {
   }
 
   @override
-  String routeUri(Map<String, dynamic> params) {
+  String routeUri(params) {
     if (toRouteUri == null) return null;
-    return toRouteUri(params);
+    return toRouteUri(RouteParams.of(params));
   }
 }

@@ -14,7 +14,7 @@ import 'package:flutter/widgets.dart';
 import 'app_route.dart';
 
 ///
-typedef Route<T> RouteCreator<T, P>(String name, P parameters);
+typedef Route<T> RouteCreator<T, P extends RouteParams>(String name, P parameters);
 
 typedef Future<R> RouteExecutor<R>();
 
@@ -24,7 +24,7 @@ typedef NavigatorState NavigatorOf(BuildContext context);
 /// This class is responsible for providing a [RouteCreator] for a static [AppRoute].  You would use this if you want/
 /// need to fully customize the `Route`, or if you use a specialized `Route` subclass.
 abstract class RouterFactory {
-  RouteCreator<R, P> generate<R, P>(
+  RouteCreator<R, P> generate<R, P extends RouteParams>(
     AppRoute<R, P> appRoute,
     TransitionType transition,
     Duration transitionDuration,
@@ -39,13 +39,46 @@ typedef Future<R> CompletableHandler<R, P>(BuildContext context, P parameters);
 typedef Widget WidgetHandler<R, P>(BuildContext context, P parameters);
 
 /// Converts dynamic map arguments to a known type [P]
-typedef P ParameterConverter<P>(rawInput);
+typedef P ParameterConverter<P extends RouteParams>(rawInput);
 
 /// Given parameters, produces a link back to this route
-typedef String ToRouteUri(Map<String, dynamic> parameters);
+typedef String ToRouteUri(parameters);
 
 /// Given parameters, produces a title for this route
 typedef String ToRouteTitle<P>(P parameters);
+
+abstract class RouteParams {
+  Map<String, dynamic> toMap();
+  factory RouteParams.of(map) {
+    map ??= DefaultRouteParams();
+    if (map is Map<String, dynamic>) {
+      return DefaultRouteParams(map);
+    } else if (map is RouteParams) {
+      return map;
+    } else {
+      throw "Illegal param type ${map?.runtimeType}";
+    }
+  }
+  dynamic operator [](String key);
+
+  factory RouteParams.empty() => DefaultRouteParams();
+}
+
+class DefaultRouteParams implements RouteParams {
+  final Map<String, dynamic> params;
+
+  DefaultRouteParams([Map<String, dynamic> params]) : params = params ?? <String, dynamic>{};
+
+  @override
+  Map<String, dynamic> toMap() {
+    return params;
+  }
+
+  @override
+  operator [](String key) {
+    return params[key];
+  }
+}
 
 enum TransitionType {
   native,
@@ -73,7 +106,7 @@ class RouteNotFoundException implements Exception {
   }
 }
 
-extension AppRouteCastingExtensions<R, P> on AppRoute<R, P> {
+extension AppRouteCastingExtensions<R, P extends RouteParams> on AppRoute<R, P> {
   AppPageRoute<R, P> asPageRoute() => this as AppPageRoute<R, P>;
   CompletableAppRoute<R, P> asCompletableRoute() => this as CompletableAppRoute<R, P>;
 }
@@ -128,4 +161,10 @@ class InvalidRouteDefinition {
   final String code;
 
   InvalidRouteDefinition({this.code, this.message, this.route});
+}
+
+extension RouteParamsExt on RouteParams {
+  T get<T>(key) {
+    return this["$key"] as T;
+  }
 }

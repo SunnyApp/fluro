@@ -29,7 +29,7 @@ class Router {
   NavigatorOf navigatorOf;
 
   /// Generic handler for when a route has not been defined
-  WidgetHandler notFoundHandler;
+  final AppRoute notFoundRoute;
 
   /// Converts an [AppRoute] and parameters into a [Route] that can be used with a navigator
   RouterFactory routeFactory;
@@ -37,42 +37,54 @@ class Router {
   Router(
       {NavigatorOf navigatorOf,
       this.routeFactory = const DefaultRouterFactory(),
+      this.notFoundRoute,
       ParameterExtractorType parameterMode = ParameterExtractorType.restTemplate})
       : _routeTree = RouteTree(parameterMode),
         navigatorOf = navigatorOf ??
             ((context) {
               return Navigator.of(context);
-            });
+            }) {
+    if (notFoundRoute != null) {
+      this.register(notFoundRoute);
+    }
+  }
 
-  Router.ofUriTemplates({NavigatorOf navigatorOf, this.routeFactory = const DefaultRouterFactory()})
-      : _routeTree = RouteTree(ParameterExtractorType.uriTemplate),
-        navigatorOf = navigatorOf ?? ((context) => Navigator.of(context));
+  Router.ofUriTemplates({
+    NavigatorOf navigatorOf,
+    this.notFoundRoute,
+    this.routeFactory = const DefaultRouterFactory(),
+  })  : _routeTree = RouteTree(ParameterExtractorType.uriTemplate),
+        navigatorOf = navigatorOf ?? ((context) => Navigator.of(context)) {
+    if (notFoundRoute != null) {
+      this.register(notFoundRoute);
+    }
+  }
 
   List<String> get paths => _routeTree.paths;
 
   /// Registers a pre-built [AppRoute]
-  AppRoute<R, P> register<R, P>(AppRoute<R, P> route) {
+  AppRoute<R, P> register<R, P extends RouteParams>(AppRoute<R, P> route) {
     return _routeTree.addRoute<R, P>(route);
   }
 
   /// Creates an [AppPageRoute] definition whose arguments are [Map<String, dynamic>]
-  AppRoute<R, Map<String, dynamic>> define<R>(String routePath,
-      {@required WidgetHandler<R, Map<String, dynamic>> handler, TransitionType transitionType}) {
-    return _routeTree.addRoute<R, Map<String, dynamic>>(
-      AppPageRoute(routePath, handler, (_) => _ as Map<String, dynamic>, transitionType: transitionType),
+  AppRoute<R, RouteParams> define<R>(String routePath,
+      {@required WidgetHandler<R, RouteParams> handler, TransitionType transitionType}) {
+    return _routeTree.addRoute<R, RouteParams>(
+      AppPageRoute(routePath, handler, (_) => RouteParams.of(_), transitionType: transitionType),
     );
   }
 
   /// Creates a [CompletableAppRoute] definition.
-  AppRoute<R, Map<String, dynamic>> defineCompletable<R>(String routePath,
-      {@required CompletableHandler<R, Map<String, dynamic>> handler}) {
-    return _routeTree.addRoute<R, Map<String, dynamic>>(
-      CompletableAppRoute(routePath, handler, (_) => _ as Map<String, dynamic>),
+  AppRoute<R, RouteParams> defineCompletable<R>(String routePath,
+      {@required CompletableHandler<R, RouteParams> handler}) {
+    return _routeTree.addRoute<R, RouteParams>(
+      CompletableAppRoute(routePath, handler, (_) => RouteParams.of(_)),
     );
   }
 
   /// Creates an [AppPageRoute] definition for the passed [WidgetHandler], using a custom parameter type
-  AppRoute<R, P> defineWithParams<R, P>(String routePath,
+  AppRoute<R, P> defineWithParams<R, P extends RouteParams>(String routePath,
       {@required WidgetHandler<R, P> handler,
       @required ParameterConverter<P> paramConverter,
       TransitionType transitionType}) {
@@ -102,13 +114,13 @@ extension RouterExtensions on Router {
     dynamic arguments = settings.arguments;
     if (appRoute == null) {
       /// The parameters are embedded in the url, we can ignore
-      final match = _routeTree.matchRoute(settings.name) ?? AppRouteMatch.missing();
+      final match = _routeTree.matchRoute(settings.name) ?? AppRouteMatch(notFoundRoute, null);
       appRoute = match.route;
       arguments ??= match.parameters;
     }
 
     final creator = this.routeFactory.generate(appRoute, null, null, null);
-    return creator(appRoute.route, arguments);
+    return creator(appRoute.route, appRoute.paramConverter(arguments));
   }
 
   /// Navigates to the provided [path].  It's assumed that the path represents the full url, containing
@@ -135,7 +147,7 @@ extension RouterExtensions on Router {
   }
 
   /// Navigates directly to a route instance, using the provided [parameters].
-  Future<R> navigateToRoute<R, P>(BuildContext context, AppRoute<R, P> appRoute,
+  Future<R> navigateToRoute<R, P extends RouteParams>(BuildContext context, AppRoute<R, P> appRoute,
       {bool replace = false,
       P parameters,
       bool clearStack = false,
@@ -164,7 +176,7 @@ extension RouterExtensions on Router {
   ///
   Future navigateToDynamicRoute(BuildContext context, AppRoute appRoute,
       {bool replace = false,
-      dynamic parameters,
+      RouteParams parameters,
       bool clearStack = false,
       TransitionType transition,
       Duration transitionDuration = const Duration(milliseconds: 250),

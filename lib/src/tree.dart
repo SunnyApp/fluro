@@ -17,21 +17,22 @@ enum RouteTreeNodeType {
   parameter,
 }
 
+const missingRouteName = "/missing";
+
 class AppRouteMatch {
   // constructors
-  AppRouteMatch(this.route, this.rawParams) : parameters = route.paramConverter?.call(rawParams) ?? rawParams;
+  AppRouteMatch(this.route, Map<String, dynamic> rawParams)
+      : parameters = route.paramConverter?.call(rawParams) ?? RouteParams.of(rawParams);
 
   AppRouteMatch.missing()
       : route = null,
-        parameters = null,
-        rawParams = {};
+        parameters = RouteParams.empty();
 
   bool get isMissing => route == null;
 
   // properties
   final AppRoute route;
-  final Map<String, dynamic> rawParams;
-  final dynamic parameters;
+  final RouteParams parameters;
 }
 
 Map<String, dynamic> sanitizeParams(Map<String, dynamic> params) {
@@ -123,7 +124,7 @@ class RouteTree {
   }
 
   // addRoute - add a route to the route tree
-  AppRoute<R, P> addRoute<R, P>(AppRoute<R, P> route) {
+  AppRoute<R, P> addRoute<R, P extends RouteParams>(AppRoute<R, P> route) {
     if (_routesByKey.containsKey(route.route)) {
       print("DUPLICATE ROUTE: ${route.route}");
     }

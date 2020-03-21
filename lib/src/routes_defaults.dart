@@ -4,12 +4,13 @@ import 'package:fluro/fluro.dart';
 import 'package:fluro/src/common.dart';
 import 'package:fluro/src/completable_route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'app_route.dart';
 
 class DefaultRouterFactory implements RouterFactory {
-  RouteCreator<R, P> generate<R, P>(
+  RouteCreator<R, P> generate<R, P extends RouteParams>(
     AppRoute<R, P> appRoute,
     TransitionType transition,
     Duration transitionDuration,
@@ -25,7 +26,7 @@ class DefaultRouterFactory implements RouterFactory {
         bool isNativeTransition = (transition == TransitionType.native || transition == TransitionType.nativeModal);
 
         if (isNativeTransition) {
-          if (Platform.isIOS) {
+          if (!kIsWeb && Platform.isIOS) {
             return CupertinoPageRoute<R>(
                 settings: routeSettings,
                 fullscreenDialog: transition == TransitionType.nativeModal,
