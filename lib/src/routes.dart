@@ -38,7 +38,8 @@ class Router {
       {NavigatorOf navigatorOf,
       this.routeFactory = const DefaultRouterFactory(),
       this.notFoundRoute,
-      ParameterExtractorType parameterMode = ParameterExtractorType.restTemplate})
+      ParameterExtractorType parameterMode =
+          ParameterExtractorType.restTemplate})
       : _routeTree = RouteTree(parameterMode),
         navigatorOf = navigatorOf ??
             ((context) {
@@ -69,9 +70,11 @@ class Router {
 
   /// Creates an [AppPageRoute] definition whose arguments are [Map<String, dynamic>]
   AppRoute<R, RouteParams> define<R>(String routePath,
-      {@required WidgetHandler<R, RouteParams> handler, TransitionType transitionType}) {
+      {@required WidgetHandler<R, RouteParams> handler,
+      TransitionType transitionType}) {
     return _routeTree.addRoute<R, RouteParams>(
-      AppPageRoute(routePath, handler, (_) => RouteParams.of(_), transitionType: transitionType),
+      AppPageRoute(routePath, handler, (_) => RouteParams.of(_),
+          transitionType: transitionType),
     );
   }
 
@@ -89,7 +92,8 @@ class Router {
       @required ParameterConverter<P> paramConverter,
       TransitionType transitionType}) {
     return _routeTree.addRoute<R, P>(
-      AppPageRoute<R, P>(routePath, handler, paramConverter, transitionType: transitionType),
+      AppPageRoute<R, P>(routePath, handler, paramConverter,
+          transitionType: transitionType),
     );
   }
 
@@ -114,7 +118,8 @@ extension RouterExtensions on Router {
     dynamic arguments = settings.arguments;
     if (appRoute == null) {
       /// The parameters are embedded in the url, we can ignore
-      final match = _routeTree.matchRoute(settings.name) ?? AppRouteMatch(notFoundRoute, null);
+      final match = _routeTree.matchRoute(settings.name) ??
+          AppRouteMatch(notFoundRoute, null);
       appRoute = match.route;
       arguments ??= match.parameters;
     }
@@ -132,7 +137,7 @@ extension RouterExtensions on Router {
       Duration transitionDuration = const Duration(milliseconds: 250),
       RouteTransitionsBuilder transitionBuilder}) {
     final match = matchRoute(path);
-    if (match.route == null) {
+    if (match?.route == null) {
       // do something
       throw "Route not found";
     } else {
@@ -147,7 +152,8 @@ extension RouterExtensions on Router {
   }
 
   /// Navigates directly to a route instance, using the provided [parameters].
-  Future<R> navigateToRoute<R, P extends RouteParams>(BuildContext context, AppRoute<R, P> appRoute,
+  Future<R> navigateToRoute<R, P extends RouteParams>(
+      BuildContext context, AppRoute<R, P> appRoute,
       {bool replace = false,
       P parameters,
       bool clearStack = false,
@@ -167,7 +173,10 @@ extension RouterExtensions on Router {
       final route = routeCreator(appRoute.route, parameters);
       return replace ? navigator.pushReplacement(route) : navigator.push(route);
     } else if (appRoute is CompletableAppRoute<R, P>) {
-      return appRoute.handle(context, parameters);
+      return appRoute.handle(context, parameters,
+          (BuildContext context, AppRoute route, RouteParams params) {
+        return navigateToDynamicRoute(context, route, parameters: params);
+      });
     } else {
       throw "Invalid route type ${appRoute?.runtimeType ?? 'null'}";
     }
@@ -194,7 +203,10 @@ extension RouterExtensions on Router {
 
       return replace ? navigator.pushReplacement(route) : navigator.push(route);
     } else if (appRoute is CompletableAppRoute) {
-      return appRoute.handleAny(context, parameters);
+      return appRoute.handleAny(context, parameters,
+          (context, route, params) async {
+        return await navigateToDynamicRoute(context, route, parameters: params);
+      });
     } else {
       throw "Unsupported AppRoutes type ${appRoute?.runtimeType ?? 'null'}";
     }

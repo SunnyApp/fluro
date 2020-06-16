@@ -17,13 +17,23 @@ class DefaultRouterFactory implements RouterFactory {
     RouteTransitionsBuilder transitionsBuilder,
   ) {
     return (String routeName, P parameters) {
-      final routeSettings = RouteSettings(name: routeName, arguments: parameters);
+      final routeSettings =
+          RouteSettings(name: routeName, arguments: parameters);
       if (appRoute is CompletableAppRoute<R, P>) {
         return CompletableRouteAdapter<R>((context) {
-          return appRoute.handleAny(context, parameters).then((_) => _ as R);
+          return appRoute.handleAny(context, parameters,
+              (context, route, params) {
+            /// This block of code is passed down to the AppRoute, as a way to
+            /// easily invoke a new route
+            final routeCreator = generateAny(route, TransitionType.native,
+                Duration(milliseconds: 300), null);
+            final r = routeCreator(route.routeTitle(params), params);
+            return Navigator.of(context).push(r);
+          }).then((_) => _ as R);
         });
       } else if (appRoute is AppPageRoute<R, P>) {
-        bool isNativeTransition = (transition == TransitionType.native || transition == TransitionType.nativeModal);
+        bool isNativeTransition = (transition == TransitionType.native ||
+            transition == TransitionType.nativeModal);
 
         if (isNativeTransition) {
           if (!kIsWeb && Platform.isIOS) {
@@ -41,27 +51,33 @@ class DefaultRouterFactory implements RouterFactory {
                   return appRoute.handleAny(context, parameters);
                 });
           }
-        } else if (transition == TransitionType.material || transition == TransitionType.materialFullScreenDialog) {
+        } else if (transition == TransitionType.material ||
+            transition == TransitionType.materialFullScreenDialog) {
           return MaterialPageRoute<R>(
               settings: routeSettings,
-              fullscreenDialog: transition == TransitionType.materialFullScreenDialog,
+              fullscreenDialog:
+                  transition == TransitionType.materialFullScreenDialog,
               builder: (BuildContext context) {
                 return appRoute.handleAny(context, parameters);
               });
-        } else if (transition == TransitionType.cupertino || transition == TransitionType.cupertinoFullScreenDialog) {
+        } else if (transition == TransitionType.cupertino ||
+            transition == TransitionType.cupertinoFullScreenDialog) {
           return CupertinoPageRoute<R>(
               settings: routeSettings,
-              fullscreenDialog: transition == TransitionType.cupertinoFullScreenDialog,
+              fullscreenDialog:
+                  transition == TransitionType.cupertinoFullScreenDialog,
               builder: (BuildContext context) {
                 return appRoute.handleAny(context, parameters);
               });
         } else {
-          final routeTransitionsBuilder =
-              transition == TransitionType.custom ? transitionsBuilder : standardTransitionsBuilder(transition);
+          final routeTransitionsBuilder = transition == TransitionType.custom
+              ? transitionsBuilder
+              : standardTransitionsBuilder(transition);
 
           return PageRouteBuilder<R>(
             settings: routeSettings,
-            pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
               try {
                 return appRoute.handleAny(context, parameters);
               } catch (e, stack) {
@@ -80,11 +96,22 @@ class DefaultRouterFactory implements RouterFactory {
     };
   }
 
+  /// Generates a route from untyped input sources
+  RouteCreator generateAny(
+    AppRoute appRoute,
+    TransitionType transition,
+    Duration transitionDuration,
+    RouteTransitionsBuilder transitionsBuilder,
+  ) =>
+      generate(appRoute, transition, transitionDuration, transitionsBuilder);
+
   const DefaultRouterFactory();
 }
 
-RouteTransitionsBuilder standardTransitionsBuilder(TransitionType transitionType) {
-  return (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+RouteTransitionsBuilder standardTransitionsBuilder(
+    TransitionType transitionType) {
+  return (BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) {
     if (transitionType == TransitionType.fadeIn) {
       return FadeTransition(opacity: animation, child: child);
     } else {

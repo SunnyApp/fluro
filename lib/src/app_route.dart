@@ -83,12 +83,12 @@ class CompletableAppRoute<R, P extends RouteParams> implements AppRoute<R, P> {
   })  : _handler = handler,
         _toRouteTitle = toRouteTitle;
 
-  Future<R> handle(BuildContext context, P params) {
-    return _handler(context, params);
+  Future<R> handle(BuildContext context, P params, SendRoute sender) {
+    return _handler(context, params, sender);
   }
 
-  Future handleAny(BuildContext context, params) {
-    return _handler(context, params as P);
+  Future handleAny(BuildContext context, params, SendRoute sender) {
+    return _handler(context, params as P, sender);
   }
 
   @override

@@ -14,7 +14,8 @@ import '../components/demo/demo_simple_component.dart';
 import '../components/home/home_component.dart';
 import '../helpers/color_helpers.dart';
 
-final rootHandler = (BuildContext context, RouteParams params) => HomeComponent();
+final rootHandler =
+    (BuildContext context, RouteParams params) => HomeComponent();
 
 final demoRouteHandler = (BuildContext context, RouteParams params) {
   String message = params["message"] as String;
@@ -27,7 +28,7 @@ final demoRouteHandler = (BuildContext context, RouteParams params) {
   return DemoSimpleComponent(message: message, color: color, result: result);
 };
 
-final demoFunctionHandler = (BuildContext context, RouteParams params) {
+final demoFunctionHandler = (BuildContext context, RouteParams params, sender) {
   String message = params["message"] as String;
   return showDialog(
     context: context,
@@ -69,5 +70,6 @@ final deepLinkHandler = (BuildContext context, RouteParams params) {
   if (colorHex != null && colorHex.length > 0) {
     color = Color(ColorHelpers.fromHexString(colorHex));
   }
-  return DemoSimpleComponent(message: "DEEEEEP LINK!!!", color: color, result: result);
+  return DemoSimpleComponent(
+      message: "DEEEEEP LINK!!!", color: color, result: result);
 };

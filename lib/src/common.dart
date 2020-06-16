@@ -14,7 +14,8 @@ import 'package:flutter/widgets.dart';
 import 'app_route.dart';
 
 ///
-typedef Route<T> RouteCreator<T, P extends RouteParams>(String name, P parameters);
+typedef Route<T> RouteCreator<T, P extends RouteParams>(
+    String name, P parameters);
 
 typedef Future<R> RouteExecutor<R>();
 
@@ -30,10 +31,22 @@ abstract class RouterFactory {
     Duration transitionDuration,
     RouteTransitionsBuilder transitionsBuilder,
   );
+
+  RouteCreator generateAny(
+    AppRoute appRoute,
+    TransitionType transition,
+    Duration transitionDuration,
+    RouteTransitionsBuilder transitionsBuilder,
+  );
 }
 
+/// Used as a higher-order routing function, that dispatches the route immediately
+typedef Future SendRoute(
+    BuildContext context, AppRoute newRoute, RouteParams params);
+
 /// Used by [CompletableAppRoute]
-typedef Future<R> CompletableHandler<R, P>(BuildContext context, P parameters);
+typedef Future<R> CompletableHandler<R, P extends RouteParams>(
+    BuildContext context, P parameters, SendRoute sendRoute);
 
 /// Used by [AppPageRoute] Creates a widget, given [P] parameters
 typedef Widget WidgetHandler<R, P>(BuildContext context, P parameters);
@@ -67,7 +80,8 @@ abstract class RouteParams {
 class DefaultRouteParams implements RouteParams {
   final Map<String, dynamic> params;
 
-  DefaultRouteParams([Map<String, dynamic> params]) : params = params ?? <String, dynamic>{};
+  DefaultRouteParams([Map<String, dynamic> params])
+      : params = params ?? <String, dynamic>{};
 
   @override
   Map<String, dynamic> toMap() {
@@ -106,9 +120,11 @@ class RouteNotFoundException implements Exception {
   }
 }
 
-extension AppRouteCastingExtensions<R, P extends RouteParams> on AppRoute<R, P> {
+extension AppRouteCastingExtensions<R, P extends RouteParams>
+    on AppRoute<R, P> {
   AppPageRoute<R, P> asPageRoute() => this as AppPageRoute<R, P>;
-  CompletableAppRoute<R, P> asCompletableRoute() => this as CompletableAppRoute<R, P>;
+  CompletableAppRoute<R, P> asCompletableRoute() =>
+      this as CompletableAppRoute<R, P>;
 }
 
 /// How path parameters are extracted
