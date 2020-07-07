@@ -184,3 +184,7 @@ extension RouteParamsExt on RouteParams {
     return this["$key"] as T;
   }
 }
+
+SendRoute get noopSendRoute {
+  return (_, __, ___) async {};
+}
