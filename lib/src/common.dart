@@ -62,6 +62,7 @@ typedef String ToRouteTitle<P>(P parameters);
 
 abstract class RouteParams {
   Map<String, dynamic> toMap();
+
   factory RouteParams.of(map) {
     map ??= DefaultRouteParams();
     if (map is Map<String, dynamic>) {
@@ -72,6 +73,12 @@ abstract class RouteParams {
       throw "Illegal param type ${map?.runtimeType}";
     }
   }
+
+  factory RouteParams.ofId(String id) {
+    assert(id != null);
+    return DefaultRouteParams({"id": id});
+  }
+
   dynamic operator [](String key);
 
   factory RouteParams.empty() => DefaultRouteParams();
@@ -123,6 +130,7 @@ class RouteNotFoundException implements Exception {
 extension AppRouteCastingExtensions<R, P extends RouteParams>
     on AppRoute<R, P> {
   AppPageRoute<R, P> asPageRoute() => this as AppPageRoute<R, P>;
+
   CompletableAppRoute<R, P> asCompletableRoute() =>
       this as CompletableAppRoute<R, P>;
 }
