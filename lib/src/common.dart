@@ -20,7 +20,7 @@ typedef Route<T> RouteCreator<T, P extends RouteParams>(
 typedef Future<R> RouteExecutor<R>();
 
 /// Retrieves the navigator state for this router
-typedef NavigatorState NavigatorOf(BuildContext context);
+typedef NavigatorState NavigatorOf(BuildContext context, bool useRootNavigator);
 
 /// This class is responsible for providing a [RouteCreator] for a static [AppRoute].  You would use this if you want/
 /// need to fully customize the `Route`, or if you use a specialized `Route` subclass.
@@ -87,8 +87,8 @@ abstract class RouteParams {
 class DefaultRouteParams implements RouteParams {
   final Map<String, dynamic> params;
 
-  DefaultRouteParams([Map<String, dynamic> params])
-      : params = params ?? <String, dynamic>{};
+  const DefaultRouteParams([Map<String, dynamic> params])
+      : params = params ?? const <String, dynamic>{};
 
   @override
   Map<String, dynamic> toMap() {

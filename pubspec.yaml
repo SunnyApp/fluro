@@ -13,7 +13,8 @@ dependencies:
   flutter:
     sdk: flutter
   pedantic: any
-
+  logging: any
+  uri: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

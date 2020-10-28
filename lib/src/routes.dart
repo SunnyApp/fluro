@@ -12,13 +12,16 @@ import 'package:fluro/src/common.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 
 import 'app_route.dart';
 
 export 'routes_defaults.dart';
 
-class Router {
-  static final routes = Router();
+final _log = Logger("routes");
+
+class FRouter {
+  static final routes = FRouter();
 
   /// Route
   /// The tree structure that stores the defined routes
@@ -34,7 +37,7 @@ class Router {
   /// Converts an [AppRoute] and parameters into a [Route] that can be used with a navigator
   RouterFactory routeFactory;
 
-  Router(
+  FRouter(
       {NavigatorOf navigatorOf,
       this.routeFactory = const DefaultRouterFactory(),
       this.notFoundRoute,
@@ -42,20 +45,22 @@ class Router {
           ParameterExtractorType.restTemplate})
       : _routeTree = RouteTree(parameterMode),
         navigatorOf = navigatorOf ??
-            ((context) {
-              return Navigator.of(context);
+            ((context, rootNavigator) {
+              return Navigator.of(context, rootNavigator: rootNavigator);
             }) {
     if (notFoundRoute != null) {
       this.register(notFoundRoute);
     }
   }
 
-  Router.ofUriTemplates({
+  FRouter.ofUriTemplates({
     NavigatorOf navigatorOf,
     this.notFoundRoute,
     this.routeFactory = const DefaultRouterFactory(),
   })  : _routeTree = RouteTree(ParameterExtractorType.uriTemplate),
-        navigatorOf = navigatorOf ?? ((context) => Navigator.of(context)) {
+        navigatorOf = navigatorOf ??
+            ((context, rootNavigator) =>
+                Navigator.of(context, rootNavigator: rootNavigator)) {
     if (notFoundRoute != null) {
       this.register(notFoundRoute);
     }
@@ -70,30 +75,35 @@ class Router {
 
   /// Creates an [AppPageRoute] definition whose arguments are [Map<String, dynamic>]
   AppRoute<R, RouteParams> define<R>(String routePath,
-      {@required WidgetHandler<R, RouteParams> handler,
+      {String name,
+      @required WidgetHandler<R, RouteParams> handler,
       TransitionType transitionType}) {
     return _routeTree.addRoute<R, RouteParams>(
       AppPageRoute(routePath, handler, (_) => RouteParams.of(_),
-          transitionType: transitionType),
+          name: name,
+          transitionType: transitionType,
+          toRouteUri: (settings) => routePath),
     );
   }
 
   /// Creates a [CompletableAppRoute] definition.
   AppRoute<R, RouteParams> defineCompletable<R>(String routePath,
-      {@required CompletableHandler<R, RouteParams> handler}) {
+      {String name, @required CompletableHandler<R, RouteParams> handler}) {
     return _routeTree.addRoute<R, RouteParams>(
-      CompletableAppRoute(routePath, handler, (_) => RouteParams.of(_)),
+      CompletableAppRoute(routePath, handler, (_) => RouteParams.of(_),
+          name: name),
     );
   }
 
   /// Creates an [AppPageRoute] definition for the passed [WidgetHandler], using a custom parameter type
   AppRoute<R, P> defineWithParams<R, P extends RouteParams>(String routePath,
       {@required WidgetHandler<R, P> handler,
+      String name,
       @required ParameterConverter<P> paramConverter,
       TransitionType transitionType}) {
     return _routeTree.addRoute<R, P>(
       AppPageRoute<R, P>(routePath, handler, paramConverter,
-          transitionType: transitionType),
+          name: name, transitionType: transitionType),
     );
   }
 
@@ -108,24 +118,36 @@ class Router {
   }
 }
 
-extension RouterExtensions on Router {
+extension RouterExtensions on FRouter {
   /// This extension allows the router to be integrated into [Navigator], eg:
   /// ```onGenerateRoute: routes.onGenerateRoute```
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
     /// First, look up the route by its name.  This is a case where the route is invoked via pushNamed with the
     /// arguments in [settings]
+
+    _log.info(
+        "onGenerateRoute: ${settings.name} with arguments ${settings.arguments}");
     AppRoute appRoute = _routeTree.findRouteByKey(settings.name);
+    _log.info(" -> ${settings.name} found by key: ${appRoute != null}");
     dynamic arguments = settings.arguments;
     if (appRoute == null) {
-      /// The parameters are embedded in the url, we can ignore
-      final match = _routeTree.matchRoute(settings.name) ??
-          AppRouteMatch(notFoundRoute, null);
+      /// The parameters are embedded in the url
+      _log.info(" -> Attempting to extract url parameters");
+      var match = _routeTree.matchRoute(settings.name);
+      _log.info(match == null
+          ? " -> Match not found.  Falling back to /notFound"
+          : " -> ${settings.name} extracted $match");
+
+      match ??= AppRouteMatch(notFoundRoute, null);
       appRoute = match.route;
       arguments ??= match.parameters;
     }
 
-    final creator = this.routeFactory.generate(appRoute, null, null, null);
-    return creator(appRoute.route, appRoute.paramConverter(arguments));
+    /// Changed from generate to generateAny - figure this context doesn't care
+    /// about type arguments anyway
+    final creator = this.routeFactory.generateAny(appRoute, null, null, null);
+    final route = creator(appRoute.route, appRoute.paramConverter(arguments));
+    return route;
   }
 
   /// Navigates to the provided [path].  It's assumed that the path represents the full url, containing
@@ -158,6 +180,7 @@ extension RouterExtensions on Router {
       P parameters,
       bool clearStack = false,
       TransitionType transition,
+      bool rootNavigator = false,
       Duration transitionDuration = const Duration(milliseconds: 250),
       RouteTransitionsBuilder transitionBuilder}) {
     if (appRoute is AppPageRoute<R, P>) {
@@ -168,7 +191,7 @@ extension RouterExtensions on Router {
         transitionBuilder,
       );
 
-      final navigator = navigatorOf(context);
+      final navigator = navigatorOf(context, rootNavigator == true);
 
       final route = routeCreator(appRoute.route, parameters);
       return replace ? navigator.pushReplacement(route) : navigator.push(route);
@@ -188,6 +211,7 @@ extension RouterExtensions on Router {
       RouteParams parameters,
       bool clearStack = false,
       TransitionType transition,
+      bool rootNavigator = false,
       Duration transitionDuration = const Duration(milliseconds: 250),
       RouteTransitionsBuilder transitionBuilder}) {
     if (appRoute is AppPageRoute) {
@@ -199,7 +223,7 @@ extension RouterExtensions on Router {
       );
 
       final route = routeCreator(appRoute.route, parameters);
-      final navigator = navigatorOf(context);
+      final navigator = navigatorOf(context, rootNavigator == true);
 
       return replace ? navigator.pushReplacement(route) : navigator.push(route);
     } else if (appRoute is CompletableAppRoute) {

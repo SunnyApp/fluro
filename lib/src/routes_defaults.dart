@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:fluro/fluro.dart';
 import 'package:fluro/src/common.dart';
 import 'package:fluro/src/completable_route.dart';
+import 'package:fluro/src/path_route_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,14 +18,12 @@ class DefaultRouterFactory implements RouterFactory {
     RouteTransitionsBuilder transitionsBuilder,
   ) {
     return (String routeName, P parameters) {
-      final routeSettings =
-          RouteSettings(name: routeName, arguments: parameters);
       if (appRoute is CompletableAppRoute<R, P>) {
         return CompletableRouteAdapter<R>((context) {
           return appRoute.handleAny(context, parameters,
               (context, route, params) {
             /// This block of code is passed down to the AppRoute, as a way to
-            /// easily invoke a new route
+            /// invoke a child route from the parent route's context
             final routeCreator = generateAny(route, TransitionType.native,
                 Duration(milliseconds: 300), null);
             final r = routeCreator(route.routeTitle(params), params);
@@ -34,6 +33,10 @@ class DefaultRouterFactory implements RouterFactory {
       } else if (appRoute is AppPageRoute<R, P>) {
         bool isNativeTransition = (transition == TransitionType.native ||
             transition == TransitionType.nativeModal);
+        final routeSettings = PathRouteSettings.ofAppRoute(
+          appRoute,
+          routeParams: parameters,
+        );
 
         if (isNativeTransition) {
           if (!kIsWeb && Platform.isIOS) {

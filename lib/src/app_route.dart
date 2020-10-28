@@ -18,6 +18,7 @@ abstract class AppRoute<R, P extends RouteParams> {
   String routeTitle(P params);
 
   String routeUri(params);
+  String get name;
 }
 
 /// An app route:
@@ -28,6 +29,7 @@ abstract class AppRoute<R, P extends RouteParams> {
 /// Has a default transition type
 class AppPageRoute<R, P extends RouteParams> implements AppRoute<R, P> {
   final String route;
+  final String name;
   final WidgetHandler<R, P> _handler;
   final ParameterConverter<P> paramConverter;
   final ToRouteTitle<P> _toRouteTitle;
@@ -38,6 +40,7 @@ class AppPageRoute<R, P extends RouteParams> implements AppRoute<R, P> {
     this.route,
     WidgetHandler<R, P> handler,
     this.paramConverter, {
+    this.name,
     this.transitionType,
     this.toRouteUri,
     ToRouteTitle<P> toRouteTitle,
@@ -61,14 +64,21 @@ class AppPageRoute<R, P extends RouteParams> implements AppRoute<R, P> {
 
   @override
   String routeUri(params) {
+    if (toRouteUri == null && params == null) return route;
     if (toRouteUri == null) return null;
     return toRouteUri(RouteParams.of(params));
+  }
+
+  @override
+  String toString() {
+    return 'AppPageRoute{route: $route, name: $name}';
   }
 }
 
 /// The details of the route are opaque, it manages everything internally
 class CompletableAppRoute<R, P extends RouteParams> implements AppRoute<R, P> {
   final String route;
+  final String name;
   final CompletableHandler<R, P> _handler;
   final ParameterConverter<P> paramConverter;
   final ToRouteTitle<P> _toRouteTitle;
@@ -78,6 +88,7 @@ class CompletableAppRoute<R, P extends RouteParams> implements AppRoute<R, P> {
     this.route,
     CompletableHandler<R, P> handler,
     this.paramConverter, {
+    this.name,
     this.toRouteUri,
     ToRouteTitle<P> toRouteTitle,
   })  : _handler = handler,
@@ -102,5 +113,10 @@ class CompletableAppRoute<R, P extends RouteParams> implements AppRoute<R, P> {
   String routeUri(params) {
     if (toRouteUri == null) return null;
     return toRouteUri(RouteParams.of(params));
+  }
+
+  @override
+  String toString() {
+    return 'CompletableAppRoute{route: $route, name: $name}';
   }
 }

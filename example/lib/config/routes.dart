@@ -11,7 +11,7 @@ import 'package:router_example/config/route_handlers.dart';
 
 class Routes {
   static Routes instance;
-  final Router router;
+  final FRouter router;
   static const String root = '/';
   static const String demoSimple = '/demo';
   static const String demoSimpleFixedTrans = '/demo/fixedtrans';
@@ -27,8 +27,10 @@ class Routes {
   Routes(this.router)
       : rootRoute = router.define(root, handler: rootHandler),
         demoSimpleRoute = router.define(demoSimple, handler: demoRouteHandler),
-        demoSimpleFixedTransRoute =
-            router.define(demoSimpleFixedTrans, handler: demoRouteHandler, transitionType: TransitionType.inFromLeft),
-        demoFuncRoute = router.defineCompletable(demoFunc, handler: demoFunctionHandler),
+        demoSimpleFixedTransRoute = router.define(demoSimpleFixedTrans,
+            handler: demoRouteHandler,
+            transitionType: TransitionType.inFromLeft),
+        demoFuncRoute =
+            router.defineCompletable(demoFunc, handler: demoFunctionHandler),
         deepLinkRoute = router.define(deepLink, handler: deepLinkHandler);
 }
