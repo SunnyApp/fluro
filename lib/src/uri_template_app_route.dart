@@ -55,7 +55,7 @@ class UriTemplateCompletableAppRoute<R, P extends RouteParams>
         );
 }
 
-extension RouterUriTemplateBaseExtensions on FRouter {
+extension RouterBaseExtensions on FRouter {
   /// Creates an [AppPageRoute] definition whose arguments are [Map<String, dynamic>]
   UriTemplateAppPageRoute<R, P> page<R, P extends RouteParams>(
       String routePath, WidgetHandler<R, P> handler,
@@ -136,7 +136,7 @@ extension RouterUriTemplateBaseExtensions on FRouter {
       name: name,
       toRouteTitle: toRouteTitle,
     );
-    this.register(route);
+    register(route);
     return route;
   }
 }

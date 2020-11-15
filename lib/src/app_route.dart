@@ -28,11 +28,18 @@ abstract class AppRoute<R, P extends RouteParams> {
 /// Knows how to convert raw map params into actual params
 /// Has a default transition type
 class AppPageRoute<R, P extends RouteParams> implements AppRoute<R, P> {
+
+  @override
   final String route;
+
+  @override
   final String name;
   final WidgetHandler<R, P> _handler;
+  @override
   final ParameterConverter<P> paramConverter;
   final ToRouteTitle<P> _toRouteTitle;
+
+  @override
   final ToRouteUri toRouteUri;
   final TransitionType transitionType;
 
@@ -77,11 +84,15 @@ class AppPageRoute<R, P extends RouteParams> implements AppRoute<R, P> {
 
 /// The details of the route are opaque, it manages everything internally
 class CompletableAppRoute<R, P extends RouteParams> implements AppRoute<R, P> {
+  @override
   final String route;
+  @override
   final String name;
   final CompletableHandler<R, P> _handler;
+  @override
   final ParameterConverter<P> paramConverter;
   final ToRouteTitle<P> _toRouteTitle;
+  @override
   final ToRouteUri toRouteUri;
 
   CompletableAppRoute(

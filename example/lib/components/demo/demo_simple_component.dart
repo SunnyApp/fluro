@@ -6,17 +6,15 @@
  * Copyright (c) 2019 Yakka, LLC. All rights reserved.
  * See LICENSE for distribution and usage details.
  */
-import '../../helpers/color_helpers.dart';
 import 'package:flutter/material.dart';
+
+import '../../helpers/color_helpers.dart';
 
 class DemoSimpleComponent extends StatelessWidget {
   DemoSimpleComponent(
-      {String message = "Testing",
-      Color color = const Color(0xFFFFFFFF),
-      String result})
-      : this.message = message,
-        this.color = color,
-        this.result = result;
+      {this.message = "Testing",
+      this.color = const Color(0xFFFFFFFF),
+      this.result});
 
   final String message;
   final Color color;

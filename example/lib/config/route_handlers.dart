@@ -6,6 +6,8 @@
  * Copyright (c) 2019 Yakka, LLC. All rights reserved.
  * See LICENSE for distribution and usage details.
  */
+import 'dart:async';
+
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -14,21 +16,29 @@ import '../components/demo/demo_simple_component.dart';
 import '../components/home/home_component.dart';
 import '../helpers/color_helpers.dart';
 
+typedef RouteHandler = Widget Function(BuildContext context, RouteParams params,
+    [dynamic sender]);
+
+typedef FunctionHandler<T> = FutureOr<T> Function(
+    BuildContext context, RouteParams params);
+
 final rootHandler =
     (BuildContext context, RouteParams params) => HomeComponent();
 
-final demoRouteHandler = (BuildContext context, RouteParams params) {
+final RouteHandler demoRouteHandler =
+    (BuildContext context, RouteParams params, [sender]) {
   String message = params["message"] as String;
   String colorHex = params["color_hex"] as String;
   String result = params["result"] as String;
   Color color = Color(0xFFFFFFFF);
-  if (colorHex != null && colorHex.length > 0) {
+  if (colorHex != null && colorHex.isNotEmpty) {
     color = Color(ColorHelpers.fromHexString(colorHex));
   }
   return DemoSimpleComponent(message: message, color: color, result: result);
 };
 
-final demoFunctionHandler = (BuildContext context, RouteParams params, sender) {
+final CompletableHandler demoFunctionHandler =
+    (BuildContext context, RouteParams params, sender) {
   String message = params["message"] as String;
   return showDialog(
     context: context,
@@ -63,11 +73,12 @@ final demoFunctionHandler = (BuildContext context, RouteParams params, sender) {
 /// To test on Android:
 ///
 /// `adb shell am start -W -a android.intent.action.VIEW -d "fluro://deeplink?path=/message&mesage=fluro%20rocks%21%21" com.theyakka.fluro`
-final deepLinkHandler = (BuildContext context, RouteParams params) {
+final RouteHandler deepLinkHandler =
+    (BuildContext context, RouteParams params, [sender]) {
   String colorHex = params["color_hex"] as String;
   String result = params["result"] as String;
   Color color = Color(0xFFFFFFFF);
-  if (colorHex != null && colorHex.length > 0) {
+  if (colorHex != null && colorHex.isNotEmpty) {
     color = Color(ColorHelpers.fromHexString(colorHex));
   }
   return DemoSimpleComponent(

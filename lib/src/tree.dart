@@ -33,6 +33,14 @@ class AppRouteMatch {
   // properties
   final AppRoute route;
   final RouteParams parameters;
+
+  @override
+  String toString() {
+    return isMissing ? "AppRouteMatch:{missing=true; parameters=$parameters}" :
+    "AppRouteMatch:{route:$route; parameters=$parameters}";
+  }
+
+
 }
 
 Map<String, dynamic> sanitizeParams(Map<String, dynamic> params) {

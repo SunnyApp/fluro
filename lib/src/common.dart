@@ -14,13 +14,14 @@ import 'package:flutter/widgets.dart';
 import 'app_route.dart';
 
 ///
-typedef Route<T> RouteCreator<T, P extends RouteParams>(
+typedef RouteCreator<T, P extends RouteParams> = Route<T> Function(
     String name, P parameters);
 
-typedef Future<R> RouteExecutor<R>();
+typedef RouteExecutor<R> = Future<R> Function();
 
 /// Retrieves the navigator state for this router
-typedef NavigatorState NavigatorOf(BuildContext context, bool useRootNavigator);
+typedef NavigatorOf = NavigatorState Function(
+    BuildContext context, bool useRootNavigator);
 
 /// This class is responsible for providing a [RouteCreator] for a static [AppRoute].  You would use this if you want/
 /// need to fully customize the `Route`, or if you use a specialized `Route` subclass.
@@ -41,24 +42,26 @@ abstract class RouterFactory {
 }
 
 /// Used as a higher-order routing function, that dispatches the route immediately
-typedef Future SendRoute(
+typedef SendRoute = Future Function(
     BuildContext context, AppRoute newRoute, RouteParams params);
 
 /// Used by [CompletableAppRoute]
-typedef Future<R> CompletableHandler<R, P extends RouteParams>(
+typedef CompletableHandler<R, P extends RouteParams> = Future<R> Function(
     BuildContext context, P parameters, SendRoute sendRoute);
 
 /// Used by [AppPageRoute] Creates a widget, given [P] parameters
-typedef Widget WidgetHandler<R, P>(BuildContext context, P parameters);
+typedef WidgetHandler<R, P> = Widget Function(
+    BuildContext context, P parameters);
 
 /// Converts dynamic map arguments to a known type [P]
-typedef P ParameterConverter<P extends RouteParams>(rawInput);
+typedef ParameterConverter<P extends RouteParams> = P Function(
+    dynamic rawInput);
 
 /// Given parameters, produces a link back to this route
-typedef String ToRouteUri(parameters);
+typedef ToRouteUri = String Function(dynamic parameters);
 
 /// Given parameters, produces a title for this route
-typedef String ToRouteTitle<P>(P parameters);
+typedef ToRouteTitle<P> = String Function(P parameters);
 
 abstract class RouteParams {
   Map<String, dynamic> toMap();
@@ -96,7 +99,7 @@ class DefaultRouteParams implements RouteParams {
   }
 
   @override
-  operator [](String key) {
+  dynamic operator [](String key) {
     return params[key];
   }
 }
