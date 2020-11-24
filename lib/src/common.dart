@@ -77,6 +77,11 @@ abstract class RouteParams {
     }
   }
 
+  factory RouteParams.kv(key, value) {
+    assert(key != null);
+    return DefaultRouteParams({key: value});
+  }
+
   factory RouteParams.ofId(String id) {
     assert(id != null);
     return DefaultRouteParams({"id": id});
