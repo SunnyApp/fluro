@@ -79,7 +79,7 @@ abstract class RouteParams {
 
   factory RouteParams.kv(key, value) {
     assert(key != null);
-    return DefaultRouteParams({key: value});
+    return DefaultRouteParams({"$key": value});
   }
 
   factory RouteParams.ofId(String id) {
@@ -103,10 +103,17 @@ class DefaultRouteParams implements RouteParams {
     return params;
   }
 
+  Map<String, dynamic> toJson() {
+    return params;
+  }
+
   @override
   dynamic operator [](String key) {
     return params[key];
   }
+
+  @override
+  String toString() => "${toMap()}";
 }
 
 enum TransitionType {
@@ -173,7 +180,7 @@ extension ParameterExtractorTypeExtensions on ParameterExtractorType {
 
   /// Extracts the parameter name from a path components
   String extractName(String pathComponent) {
-    if (!this.isParameter(pathComponent)) {
+    if (!isParameter(pathComponent)) {
       throw InvalidRouteDefinition(code: "invalidComponentFormat");
     }
     switch (this) {

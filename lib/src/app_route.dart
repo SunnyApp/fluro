@@ -71,8 +71,11 @@ class AppPageRoute<R, P extends RouteParams> implements AppRoute<R, P> {
 
   @override
   String routeUri(params) {
-    if (toRouteUri == null && params == null) return route;
-    if (toRouteUri == null) return null;
+    if (toRouteUri == null && (params == null || params is InternalArgs)) return route;
+    assert(this.toRouteUri != null, "You must either use a simple route, or have a way of "
+        "constructing a reverse URI.  If the parameters don't affect the URL, you can mark "
+        "the args with InternalArgs to avoid this error.\n\t Route=$route, params=$params");
+
     return toRouteUri(RouteParams.of(params));
   }
 
@@ -80,6 +83,10 @@ class AppPageRoute<R, P extends RouteParams> implements AppRoute<R, P> {
   String toString() {
     return 'AppPageRoute{route: $route, name: $name}';
   }
+}
+
+abstract class InternalArgs {
+
 }
 
 /// The details of the route are opaque, it manages everything internally

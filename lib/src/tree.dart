@@ -9,6 +9,7 @@
 
 import 'package:fluro/src/common.dart';
 import 'package:flutter/widgets.dart';
+import 'package:logging/logging.dart';
 
 import 'app_route.dart';
 
@@ -17,12 +18,15 @@ enum RouteTreeNodeType {
   parameter,
 }
 
+final _log = Logger("appRoute");
+
 const missingRouteName = "/missing";
 
 class AppRouteMatch {
   // constructors
   AppRouteMatch(this.route, Map<String, dynamic> rawParams)
-      : parameters = route.paramConverter?.call(rawParams) ?? RouteParams.of(rawParams);
+      : parameters =
+            route.paramConverter?.call(rawParams) ?? RouteParams.of(rawParams);
 
   AppRouteMatch.missing()
       : route = null,
@@ -36,11 +40,16 @@ class AppRouteMatch {
 
   @override
   String toString() {
-    return isMissing ? "AppRouteMatch:{missing=true; parameters=$parameters}" :
-    "AppRouteMatch:{route:$route; parameters=$parameters}";
+    return isMissing
+        ? "AppRouteMatch:{missing=true; parameters=$parameters}"
+        : "AppRouteMatch:{route:$route; parameters=$parameters}";
   }
 
-
+  AppRouteMatch.builder(String route,
+      {@required WidgetBuilder builder, String name})
+      : parameters = null,
+        route = AppPageRoute(route, (c, _) => builder(c), (_) => null,
+            name: name, toRouteUri: (_) => route);
 }
 
 Map<String, dynamic> sanitizeParams(Map<String, dynamic> params) {
@@ -60,7 +69,8 @@ class RouteTreeNodeMatch {
   // constructors
   RouteTreeNodeMatch(this.node) : _parameters = <String, dynamic>{};
 
-  RouteTreeNodeMatch.fromMatch(RouteTreeNodeMatch match, this.node) : _parameters = <String, dynamic>{} {
+  RouteTreeNodeMatch.fromMatch(RouteTreeNodeMatch match, this.node)
+      : _parameters = <String, dynamic>{} {
     // ignore: unused_local_variable
     var self = this;
     if (match != null) {
@@ -81,9 +91,15 @@ class RouteTreeNodeMatch {
     if (existing == null) {
       _parameters[_key] = value;
     } else if (existing is Iterable) {
-      _parameters[_key] = {...existing, if (value is Iterable) ...value else value};
+      _parameters[_key] = {
+        ...existing,
+        if (value is Iterable) ...value else value
+      };
     } else {
-      _parameters[_key] = {existing, if (value is Iterable) ...value else value};
+      _parameters[_key] = {
+        existing,
+        if (value is Iterable) ...value else value
+      };
     }
   }
 
@@ -134,7 +150,7 @@ class RouteTree {
   // addRoute - add a route to the route tree
   AppRoute<R, P> addRoute<R, P extends RouteParams>(AppRoute<R, P> route) {
     if (_routesByKey.containsKey(route.route)) {
-      print("DUPLICATE ROUTE: ${route.route}");
+      _log.info("DUPLICATE ROUTE: ${route.route}");
     }
     _routesByKey[route.route] = route;
     String path = route.route;
@@ -145,7 +161,8 @@ class RouteTree {
         // could be affected
         throw ("Default route was already defined");
       }
-      var node = RouteTreeNode(path, RouteTreeNodeType.component, routes: [route]);
+      var node =
+          RouteTreeNode(path, RouteTreeNodeType.component, routes: [route]);
       _nodes.add(node);
       _hasDefaultRoute = true;
       return route;
@@ -158,7 +175,8 @@ class RouteTree {
     for (int i = 0; i < pathComponents.length; i++) {
       String component = pathComponents[i];
       final node = _nodeForComponent(component, parent) ??
-          RouteTreeNode(component, _typeForComponent(component), parent: parent);
+          RouteTreeNode(component, _typeForComponent(component),
+              parent: parent);
       if (parent == null) {
         _nodes.add(node);
       } else {
@@ -176,7 +194,8 @@ class RouteTree {
   AppRouteMatch matchRoute(String path) {
     if (path == null) return null;
     final uri = Uri.parse(path);
-    final components = path == Navigator.defaultRouteName ? const ["/"] : uri.pathSegments;
+    final components =
+        path == Navigator.defaultRouteName ? const ["/"] : uri.pathSegments;
 
     var nodeMatches = <RouteTreeNode, RouteTreeNodeMatch>{};
     var nodesToCheck = _nodes;
@@ -206,14 +225,20 @@ class RouteTree {
         return null;
       }
     }
-    if (match != null && uri.queryParametersAll != null) match += uri.queryParametersAll;
-    List<RouteTreeNodeMatch> matches = nodeMatches.values.where((_) => _ != null).toList();
+    if (match != null && uri.queryParametersAll != null)
+      match += uri.queryParametersAll;
+    List<RouteTreeNodeMatch> matches =
+        nodeMatches.values.where((_) => _ != null).toList();
     for (final match in matches) {
       RouteTreeNode nodeToUse = match.node;
-      print("using match: $match, ${nodeToUse?.part}, ${match?._parameters}");
-      if (nodeToUse != null && nodeToUse.routes != null && nodeToUse.routes.isNotEmpty) {
+      _log.info(
+          "using match: $match, ${nodeToUse?.part}, ${match?._parameters}");
+      if (nodeToUse != null &&
+          nodeToUse.routes != null &&
+          nodeToUse.routes.isNotEmpty) {
         final routes = nodeToUse.routes;
-        final routeMatch = AppRouteMatch(routes[0], sanitizeParams(match._parameters));
+        final routeMatch =
+            AppRouteMatch(routes[0], sanitizeParams(match._parameters));
         return routeMatch;
       }
     }

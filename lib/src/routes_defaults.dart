@@ -7,10 +7,14 @@ import 'package:fluro/src/path_route_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 
 import 'app_route.dart';
 
+final _log = Logger("defaultRouterFactory");
+
 class DefaultRouterFactory implements RouterFactory {
+  @override
   RouteCreator<R, P> generate<R, P extends RouteParams>(
     AppRoute<R, P> appRoute,
     TransitionType transition,
@@ -84,8 +88,7 @@ class DefaultRouterFactory implements RouterFactory {
               try {
                 return appRoute.handleAny(context, parameters);
               } catch (e, stack) {
-                print(e);
-                print(stack);
+                _log.severe("Error creating page: $e", e, stack);
                 return Text("Invalid");
               }
             },
@@ -100,6 +103,7 @@ class DefaultRouterFactory implements RouterFactory {
   }
 
   /// Generates a route from untyped input sources
+  @override
   RouteCreator generateAny(
     AppRoute appRoute,
     TransitionType transition,

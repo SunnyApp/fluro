@@ -6,19 +6,18 @@ version: 1.6.1
 homepage: https://github.com/theyakka/fluro
 
 environment:
-  sdk: ">=2.6.0 <3.0.0"
-  flutter: ">=1.12.0"
+  sdk: '>=2.10.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  pedantic: any
-  logging: any
-  uri: any
+  logging: ^0.11.4
+  pedantic: ^1.9.2
+  uri: ^0.11.3+1
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  test: ^1.6.0
+  test: ^1.15.7
 
 flutter:
   uses-material-design: false
