@@ -1,0 +1,29 @@
+// **************************************************************************
+// DelegateGenerator
+// **************************************************************************
+
+abstract class __PathAndEntityDelegate {
+  _PathAndEntity get _params;
+}
+
+mixin __PathAndEntityMixin implements __PathAndEntityDelegate {
+  String get routeId => _params.routeId;
+  Entity get entity => _params.entity;
+}
+
+// **************************************************************************
+// DegenGenerator
+// **************************************************************************
+
+class EntityPage extends _EntityPage with __PathAndEntityMixin {
+  EntityPage({
+    String routeId,
+    Entity entity,
+    Key key,
+  }) : super(
+            PathAndEntity(
+              routeId: routeId,
+              entity: entity,
+            ),
+            key: key);
+}

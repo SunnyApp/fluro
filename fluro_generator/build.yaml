@@ -1,0 +1,15 @@
+targets:
+  $default:
+    builders:
+      fluro:
+        enabled: true
+
+builders:
+  degen:
+    import: "package:fluro_generator/build.dart"
+    builder_factories: [ "fluroBuilder" ]
+    build_extensions: { ".dart": [ ".fluro.g.part" ] }
+    auto_apply: dependents
+    build_to: source
+    applies_builders: [ "source_gen|combining_builder" ]
+

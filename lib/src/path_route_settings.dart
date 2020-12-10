@@ -33,7 +33,7 @@ String calculateRoute(final input) {
 }
 
 /// A more advanced route settings that lets us provide more context when routing
-class PathRouteSettings extends RouteSettings {
+class PathRouteSettings extends RouteSettings implements RouteInformation {
   final String label;
   final String route;
   final String resolvedPath;
@@ -74,5 +74,21 @@ class PathRouteSettings extends RouteSettings {
     }
 
     return str;
+  }
+
+  @override
+  String get location => resolvedPath ?? route;
+
+  @override
+  PathRouteSettings get state => this;
+
+  Map<String, dynamic> toJson() {
+    // ignore: unnecessary_cast
+    return {
+      'label': this.label,
+      'route': this.route,
+      'resolvedPath': this.resolvedPath,
+      'routeParams': this.routeParams?.toMap(),
+    } as Map<String, dynamic>;
   }
 }

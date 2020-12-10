@@ -27,8 +27,8 @@ abstract class AppRoute<R, P extends RouteParams> {
 /// Has a handler callback
 /// Knows how to convert raw map params into actual params
 /// Has a default transition type
-class AppPageRoute<R, P extends RouteParams> implements AppRoute<R, P> {
-
+class AppPageRoute<R, P extends RouteParams>
+    implements AppRoute<R, P>, InternalArgs {
   @override
   final String route;
 
@@ -71,8 +71,11 @@ class AppPageRoute<R, P extends RouteParams> implements AppRoute<R, P> {
 
   @override
   String routeUri(params) {
-    if (toRouteUri == null && (params == null || params is InternalArgs)) return route;
-    assert(this.toRouteUri != null, "You must either use a simple route, or have a way of "
+    if (toRouteUri == null && (params == null || params is InternalArgs))
+      return route;
+    assert(
+        this.toRouteUri != null,
+        "You must either use a simple route, or have a way of "
         "constructing a reverse URI.  If the parameters don't affect the URL, you can mark "
         "the args with InternalArgs to avoid this error.\n\t Route=$route, params=$params");
 
@@ -85,9 +88,7 @@ class AppPageRoute<R, P extends RouteParams> implements AppRoute<R, P> {
   }
 }
 
-abstract class InternalArgs {
-
-}
+abstract class InternalArgs {}
 
 /// The details of the route are opaque, it manages everything internally
 class CompletableAppRoute<R, P extends RouteParams> implements AppRoute<R, P> {

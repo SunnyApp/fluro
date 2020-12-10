@@ -1,0 +1,33 @@
+name: example
+description: A sample project using Fluro generator.
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.9.0 <3.0.0'
+  flutter: '>=1.20.0'
+
+dependencies:
+  fluro: any
+  fluro_generator:
+    path: ../
+    ## Used to test against flutter_degen to make sure they work together
+  flutter_degen: any
+  flutter:
+    sdk: flutter
+
+
+dependency_overrides:
+  fluro:
+    path: ../../
+  flutter_degen:
+    path: ../../../flutter_degen
+
+dev_dependencies:
+  build_runner: any
+  flutter_test:
+    sdk: flutter
+
+

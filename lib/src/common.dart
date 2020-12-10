@@ -92,7 +92,7 @@ abstract class RouteParams {
   factory RouteParams.empty() => DefaultRouteParams();
 }
 
-class DefaultRouteParams implements RouteParams {
+class DefaultRouteParams implements RouteParams, InternalArgs {
   final Map<String, dynamic> params;
 
   const DefaultRouteParams([Map<String, dynamic> params])

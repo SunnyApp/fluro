@@ -225,13 +225,14 @@ class RouteTree {
         return null;
       }
     }
-    if (match != null && uri.queryParametersAll != null)
+    if (match != null && uri.queryParametersAll != null) {
       match += uri.queryParametersAll;
+    }
     List<RouteTreeNodeMatch> matches =
         nodeMatches.values.where((_) => _ != null).toList();
     for (final match in matches) {
       RouteTreeNode nodeToUse = match.node;
-      _log.info(
+      _log.fine(
           "using match: $match, ${nodeToUse?.part}, ${match?._parameters}");
       if (nodeToUse != null &&
           nodeToUse.routes != null &&
