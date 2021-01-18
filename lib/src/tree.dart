@@ -60,7 +60,9 @@ Map<String, dynamic> sanitizeParams(Map<String, dynamic> params) {
         entry.key: (entry.value as List).first
       else if (entry.value is List && (entry.value as List).isNotEmpty)
         entry.key: entry.value
-      else if (entry.value is! List)
+      else if(entry.value is String && entry.value != null && (entry.value as String).trim().isNotEmpty)
+        entry.key: entry.value
+      else if (entry.value is! List && entry.value is! String)
         entry.key: entry.value,
   };
 }
