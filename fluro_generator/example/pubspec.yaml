@@ -10,17 +10,17 @@ environment:
   flutter: '>=1.20.0'
 
 dependencies:
-  fluro: any
-  fluro_generator:
+  sunny_fluro: any
+  sunny_fluro_generator:
     path: ../
     ## Used to test against flutter_degen to make sure they work together
-  flutter_degen: any
+  flutter_degen: ^0.4.5+5
   flutter:
     sdk: flutter
 
 
 dependency_overrides:
-  fluro:
+  sunny_fluro:
     path: ../../
   flutter_degen:
     path: ../../../flutter_degen

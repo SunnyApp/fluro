@@ -1,7 +1,12 @@
 <img src="https://storage.googleapis.com/product-logos/logo_fluro.png" width="220">
 <br/><br/>
 
-The brightest, hippest, coolest router for Flutter.
+(Based on) the brightest, hippest, coolest router for Flutter.
+
+The biggest change is the introduction of (optional) typed route params.  You can still parse and route using urls, 
+but you can also load a route using complex typed arguments.
+
+To assist with boilerplate code, the typed route system includes a code generator.
 
 [![Version](https://img.shields.io/badge/version-1.6.0-blue.svg)](https://pub.dartlang.org/packages/fluro)
 [![Build Status](https://travis-ci.org/theyakka/fluro.svg?branch=master)](https://travis-ci.org/theyakka/fluro)
@@ -27,14 +32,14 @@ See CHANGELOG for all breaking (and non-breaking) changes.
 You should ensure that you add the router as a dependency in your flutter project.
 ```yaml
 dependencies:
- fluro: "^1.6.0"
+ sunny_fluro: "^1.6.0"
 ```
 
 You can also reference the git repo directly if you want:
 ```yaml
 dependencies:
- fluro:
-   git: git://github.com/theyakka/fluro.git
+ sunny_fluro:
+   git: git://github.com/SunnyApp/fluro.git
 ```
 
 

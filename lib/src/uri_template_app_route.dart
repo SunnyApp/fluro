@@ -1,6 +1,9 @@
-import 'package:fluro/fluro.dart';
 import 'package:flutter/widgets.dart';
 import 'package:uri/uri.dart';
+
+import 'app_route.dart';
+import 'common.dart';
+import 'routes.dart';
 
 class UriTemplateAppPageRoute<R, P extends RouteParams>
     extends AppPageRoute<R, P> {

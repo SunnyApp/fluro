@@ -1,9 +1,8 @@
 import 'dart:io';
 
-import 'package:fluro/fluro.dart';
-import 'package:fluro/src/common.dart';
-import 'package:fluro/src/completable_route.dart';
-import 'package:fluro/src/path_route_settings.dart';
+import 'package:sunny_fluro/src/common.dart';
+import 'package:sunny_fluro/src/completable_route.dart';
+import 'package:sunny_fluro/src/path_route_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

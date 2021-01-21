@@ -6,7 +6,7 @@
  * Copyright (c) 2019 Yakka, LLC. All rights reserved.
  * See LICENSE for distribution and usage details.
  */
-library fluro;
+library sunny_fluro;
 
 export 'annotations.dart';
 export 'src/app_route.dart';

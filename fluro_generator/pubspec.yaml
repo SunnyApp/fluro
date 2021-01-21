@@ -1,18 +1,18 @@
-name: fluro_generator
+name: sunny_fluro_generator
 description: >
   A generator that assists in creating typed routes and parameters
 version: 1.6.1
-homepage: https://github.com/theyakka/fluro_generator
+homepage: https://github.com/SunnyApp/fluro/fluro_generator
 
 environment:
   sdk: '>=2.10.0 <3.0.0'
 
 dependencies:
   logging: ^0.11.4
-  fluro: any
-  flutter_degen: any
-  build_runner: ^1.10.9
-  source_gen: ^0.9.10
+  sunny_fluro: any
+  flutter_degen: ^0.4.5+5
+  build_runner: ^1.10.13
+  source_gen: ^0.9.10+1
 
 #  analyzer: ^0.41.1
 #  build: ^1.5.2
@@ -26,9 +26,8 @@ dev_dependencies:
   build_config: ^0.4.5
   test: ^1.15.7
 
-
 dependency_overrides:
-  fluro:
+  sunny_fluro:
     path: ../
   flutter_degen:
     path: ../../flutter_degen

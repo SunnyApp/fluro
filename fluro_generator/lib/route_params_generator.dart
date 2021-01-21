@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:flutter_degen/flutter_degen.dart';
-import 'package:fluro/annotations.dart';
+import 'package:sunny_fluro/annotations.dart';
 import 'package:source_gen/source_gen.dart';
 
 String fieldName(Element element) {

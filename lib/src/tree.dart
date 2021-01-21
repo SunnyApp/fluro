@@ -7,7 +7,7 @@
  * See LICENSE for distribution and usage details.
  */
 
-import 'package:fluro/src/common.dart';
+import 'package:sunny_fluro/src/common.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 
@@ -60,7 +60,9 @@ Map<String, dynamic> sanitizeParams(Map<String, dynamic> params) {
         entry.key: (entry.value as List).first
       else if (entry.value is List && (entry.value as List).isNotEmpty)
         entry.key: entry.value
-      else if(entry.value is String && entry.value != null && (entry.value as String).trim().isNotEmpty)
+      else if (entry.value is String &&
+          entry.value != null &&
+          (entry.value as String).trim().isNotEmpty)
         entry.key: entry.value
       else if (entry.value is! List && entry.value is! String)
         entry.key: entry.value,

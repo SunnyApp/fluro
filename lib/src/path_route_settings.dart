@@ -1,6 +1,6 @@
-import 'package:fluro/src/app_route.dart';
-import 'package:fluro/src/common.dart';
-import 'package:fluro/src/fluro_ext.dart';
+import 'package:sunny_fluro/src/app_route.dart';
+import 'package:sunny_fluro/src/common.dart';
+import 'package:sunny_fluro/src/fluro_ext.dart';
 import 'package:flutter/cupertino.dart';
 
 final typeParameters = RegExp("<(.*)>");

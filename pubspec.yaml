@@ -1,9 +1,8 @@
-name: fluro
+name: sunny_fluro
 description: >
-  Fluro is a Flutter routing library that adds flexible routing options like wildcards, named
-  parameters and clear route definitions.
+  Sunny Fluro is a fork of the popular fluro router for Flutter that adds the option for typed routes
 version: 1.6.1
-homepage: https://github.com/theyakka/fluro
+homepage: https://github.com/SunnyApp/fluro
 
 environment:
   sdk: '>=2.10.0 <3.0.0'
@@ -14,6 +13,7 @@ dependencies:
   logging: ^0.11.4
   pedantic: ^1.9.2
   uri: ^0.11.3+1
+  sunny_dart: ^0.6.0+4
 dev_dependencies:
   flutter_test:
     sdk: flutter
