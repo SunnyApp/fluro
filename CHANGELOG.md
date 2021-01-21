@@ -1,3 +1,9 @@
+## [1.7.0+1]
+ * Updated minor version
+Updated bundle
+Updated fastlane
+Updated name
+
 # 1.6.1
 - Support for Flutter `1.12+`
 
