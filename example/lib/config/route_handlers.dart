@@ -8,7 +8,7 @@
  */
 import 'dart:async';
 
-import 'package:sunny_fluro/fluro.dart';
+import 'package:sunny_fluro/sunny_fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 

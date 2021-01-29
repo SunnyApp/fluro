@@ -1,4 +1,4 @@
-import 'package:sunny_fluro/fluro.dart';
+import 'package:sunny_fluro/sunny_fluro.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_degen/annotations.dart';
 

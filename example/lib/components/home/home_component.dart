@@ -8,10 +8,10 @@
  */
 import 'dart:async';
 
-import 'package:sunny_fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sunny_fluro/sunny_fluro.dart';
 
 import '../../config/application.dart';
 
