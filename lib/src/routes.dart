@@ -69,8 +69,9 @@ class FRouter {
   List<String> get paths => _routeTree.paths;
 
   /// Registers a pre-built [AppRoute]
-  AppRoute<R, P> register<R, P extends RouteParams>(AppRoute<R, P> route) {
-    return _routeTree.addRoute<R, P>(route);
+  A register<R, P extends RouteParams, A extends AppRoute<R, P>>(A route) {
+    _routeTree.addRoute<R, P>(route);
+    return route;
   }
 
   /// Creates an [AppPageRoute] definition whose arguments are [Map<String, dynamic>]

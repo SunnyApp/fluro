@@ -22,21 +22,28 @@ final _log = Logger("appRoute");
 
 const missingRouteName = "/missing";
 
-class AppRouteMatch {
+/// Represents the combination of the route definition [AppRoute] as well as the
+/// specific parameters to create an instance of that route.
+///
+/// Using these two pieces of information, a caller could then push the route,
+/// overlay, etc.  In other words, this class tries to abstract away _how_ the
+/// the route is displayed from what the route is.
+class AppRouteMatch<R, P extends RouteParams> {
   // constructors
-  AppRouteMatch(this.route, Map<String, dynamic> rawParams)
-      : parameters =
-            route.paramConverter?.call(rawParams) ?? RouteParams.of(rawParams);
+  AppRouteMatch.ofMap(this.route, Map<String, dynamic> rawParams)
+      : parameters = route.paramConverter?.call(rawParams);
+
+  const AppRouteMatch(this.route, this.parameters);
 
   AppRouteMatch.missing()
       : route = null,
-        parameters = RouteParams.empty();
+        parameters = null;
 
   bool get isMissing => route == null;
 
   // properties
-  final AppRoute route;
-  final RouteParams parameters;
+  final AppRoute<R, P> route;
+  final P parameters;
 
   @override
   String toString() {
@@ -243,7 +250,7 @@ class RouteTree {
           nodeToUse.routes.isNotEmpty) {
         final routes = nodeToUse.routes;
         final routeMatch =
-            AppRouteMatch(routes[0], sanitizeParams(match._parameters));
+            AppRouteMatch.ofMap(routes[0], sanitizeParams(match._parameters));
         return routeMatch;
       }
     }

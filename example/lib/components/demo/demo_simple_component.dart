@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import '../../helpers/color_helpers.dart';
 
 class DemoSimpleComponent extends StatelessWidget {
-  DemoSimpleComponent(
+  const DemoSimpleComponent(
       {this.message = "Testing",
       this.color = const Color(0xFFFFFFFF),
       this.result});

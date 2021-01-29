@@ -70,7 +70,7 @@ packages:
       name: build_runner
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.10.13"
+    version: "1.11.0"
   build_runner_core:
     dependency: transitive
     description:
@@ -470,14 +470,14 @@ packages:
       path: "../.."
       relative: true
     source: path
-    version: "1.6.1"
+    version: "1.7.0+1"
   sunny_fluro_generator:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "1.6.1"
+    version: "1.7.1"
   term_glyph:
     dependency: transitive
     description:

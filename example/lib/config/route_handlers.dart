@@ -8,7 +8,7 @@
  */
 import 'dart:async';
 
-import 'package:sunny_fluro/fluro.dart';
+import 'package:sunny_fluro/sunny_fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
@@ -37,8 +37,7 @@ final RouteHandler demoRouteHandler =
   return DemoSimpleComponent(message: message, color: color, result: result);
 };
 
-final CompletableHandler demoFunctionHandler =
-    (BuildContext context, RouteParams params, sender) {
+Future demoFunctionHandler(BuildContext context, RouteParams params, sender) {
   String message = params["message"] as String;
   return showDialog(
     context: context,
@@ -67,7 +66,7 @@ final CompletableHandler demoFunctionHandler =
       );
     },
   );
-};
+}
 
 /// Handles deep links into the app
 /// To test on Android:

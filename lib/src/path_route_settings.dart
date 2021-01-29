@@ -7,6 +7,7 @@ final typeParameters = RegExp("<(.*)>");
 final newLinesPattern = RegExp("\\n");
 
 extension _FluroTypeExtensions on Type {
+  // ignore: unused_element
   String get name => "$this"
       .trimAround("_")
       .replaceAllMapped(

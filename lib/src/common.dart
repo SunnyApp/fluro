@@ -63,6 +63,8 @@ typedef ToRouteUri = String Function(dynamic parameters);
 /// Given parameters, produces a title for this route
 typedef ToRouteTitle<P> = String Function(P parameters);
 
+
+
 abstract class RouteParams {
   Map<String, dynamic> toMap();
 
@@ -211,3 +213,4 @@ extension RouteParamsExt on RouteParams {
 SendRoute get noopSendRoute {
   return (_, __, ___) async {};
 }
+

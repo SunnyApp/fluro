@@ -6,8 +6,26 @@
  * Copyright (c) 2019 Yakka, LLC. All rights reserved.
  * See LICENSE for distribution and usage details.
  */
-import 'package:sunny_fluro/fluro.dart';
+import 'dart:js';
+
+import 'package:router_example/components/home/home_component.dart';
+import 'package:sunny_fluro/sunny_fluro.dart';
 import 'package:router_example/config/route_handlers.dart';
+
+part 'routes.g.dart';
+
+@routes()
+abstract class _GeneratedRoutes {
+  @route.widget(HomeComponent, uri: "/")
+  dynamic get root;
+
+  @route.function(demoFunctionHandler, returns: bool, name: "Demo")
+  dynamic get demo;
+}
+
+GeneratedRoutes loadRoutes(FRouter router) {
+  return GeneratedRoutes(router);
+}
 
 class Routes {
   static Routes instance;

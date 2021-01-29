@@ -9,6 +9,18 @@ class UriTemplateAppPageRoute<R, P extends RouteParams>
     extends AppPageRoute<R, P> {
   final UriTemplate uriTemplate;
 
+  UriTemplateAppPageRoute.ofUri(
+    String uri,
+    WidgetHandler<R, P> handler,
+    ParameterConverter<P> paramConverter, {
+    @required String name,
+    TransitionType transitionType,
+    ToRouteTitle<P> toRouteTitle,
+  }) : this(UriTemplate(uri), handler, paramConverter,
+            name: name,
+            transitionType: transitionType,
+            toRouteTitle: toRouteTitle);
+
   UriTemplateAppPageRoute(
     this.uriTemplate,
     WidgetHandler<R, P> handler,

@@ -18,7 +18,13 @@ abstract class AppRoute<R, P extends RouteParams> {
   String routeTitle(P params);
 
   String routeUri(params);
+
   String get name;
+
+  /// Casts this route to the expected type.  If the cast is invalid, you
+  /// may have errors when running the functions because parameters are
+  /// not cast correctly
+  AppRoute<RR, PP> cast<RR, PP extends RouteParams>();
 }
 
 /// An app route:
@@ -86,6 +92,19 @@ class AppPageRoute<R, P extends RouteParams>
   String toString() {
     return 'AppPageRoute{route: $route, name: $name}';
   }
+
+  @override
+  AppRoute<RR, PP> cast<RR, PP extends RouteParams>() {
+    return AppPageRoute<RR, PP>(
+      this.route,
+      this._handler?.cast<RR, PP>(),
+      this.paramConverter?.cast<PP>(),
+      name: name,
+      transitionType: transitionType,
+      toRouteUri: toRouteUri,
+      toRouteTitle: _toRouteTitle?.cast<PP>(),
+    );
+  }
 }
 
 abstract class InternalArgs {}
@@ -137,5 +156,65 @@ class CompletableAppRoute<R, P extends RouteParams> implements AppRoute<R, P> {
   @override
   String toString() {
     return 'CompletableAppRoute{route: $route, name: $name}';
+  }
+
+  @override
+  AppRoute<RR, PP> cast<RR, PP extends RouteParams>() {
+    return CompletableAppRoute<RR, PP>(
+      route,
+      _handler?.cast(),
+      paramConverter?.cast(),
+      name: name,
+      toRouteUri: toRouteUri,
+      toRouteTitle: _toRouteTitle?.cast(),
+    );
+  }
+}
+
+extension WidgetHandlerCastExt<R, P> on WidgetHandler<R, P> {
+  WidgetHandler<RR, PP> cast<RR, PP>() {
+    final self = this;
+    if (self == null) return null;
+    if (self is WidgetHandler<RR, PP>) return self as WidgetHandler<RR, PP>;
+    return (context, PP outer) {
+      return self?.call(context, outer as P);
+    };
+  }
+}
+
+extension ParamConverterCastExt<P extends RouteParams>
+    on ParameterConverter<P> {
+  ParameterConverter<PP> cast<PP extends RouteParams>() {
+    final self = this;
+    if (self == null) return null;
+    if (self is ParameterConverter<PP>) return self as ParameterConverter<PP>;
+    return (dyn) {
+      return self?.call(dyn) as PP;
+    };
+  }
+}
+
+extension ToRouteTitleCastExt<P extends RouteParams> on ToRouteTitle<P> {
+  ToRouteTitle<PP> cast<PP extends RouteParams>() {
+    final self = this;
+    if (self == null) return null;
+    if (self is ToRouteTitle<PP>) return self as ToRouteTitle<PP>;
+    return (PP dyn) {
+      return self?.call(dyn as P);
+    };
+  }
+}
+
+extension CompletableHandlerCastExt<R, P extends RouteParams>
+    on CompletableHandler<R, P> {
+  CompletableHandler<RR, PP> cast<RR, PP extends RouteParams>() {
+    final self = this;
+    if (self == null) return null;
+    if (self is CompletableHandler<RR, PP>)
+      return self as CompletableHandler<RR, PP>;
+    return (context, PP params, SendRoute sendRoute) async {
+      final res = await self?.call(context, params as P, sendRoute);
+      return res as RR;
+    };
   }
 }

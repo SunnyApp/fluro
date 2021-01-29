@@ -7,6 +7,13 @@ environment:
 dependencies:
   sunny_fluro:
     path: ../
+dev_dependencies:
+  build_runner: ^1.11.0
+  sunny_fluro_generator:
+    path: ../fluro_generator
+dependency_overrides:
+  sunny_fluro:
+    path: ../
 flutter:
   uses-material-design: false
   assets:

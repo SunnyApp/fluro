@@ -9,7 +9,7 @@ packages:
     source: hosted
     version: "14.0.0"
   analyzer:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: analyzer
       url: "https://pub.dartlang.org"
@@ -37,7 +37,7 @@ packages:
     source: hosted
     version: "2.0.0"
   build:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: build
       url: "https://pub.dartlang.org"
@@ -70,7 +70,7 @@ packages:
       name: build_runner
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.10.13"
+    version: "1.11.0"
   build_runner_core:
     dependency: transitive
     description:
@@ -205,9 +205,9 @@ packages:
   flutter_degen:
     dependency: "direct main"
     description:
-      path: "../../flutter_degen"
-      relative: true
-    source: path
+      name: flutter_degen
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.4.5+5"
   glob:
     dependency: transitive
@@ -488,7 +488,7 @@ packages:
     source: hosted
     version: "1.0.5"
   sunny_dart:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: sunny_dart
       url: "https://pub.dartlang.org"
@@ -500,7 +500,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "1.6.1"
+    version: "1.7.0+1"
   term_glyph:
     dependency: transitive
     description:
