@@ -32,13 +32,13 @@ class FRouter {
   NavigatorOf navigatorOf;
 
   /// Generic handler for when a route has not been defined
-  final AppRoute notFoundRoute;
+  final AppRoute? notFoundRoute;
 
   /// Converts an [AppRoute] and parameters into a [Route] that can be used with a navigator
   RouterFactory routeFactory;
 
   FRouter(
-      {NavigatorOf navigatorOf,
+      {NavigatorOf? navigatorOf,
       this.routeFactory = const DefaultRouterFactory(),
       this.notFoundRoute,
       ParameterExtractorType parameterMode =
@@ -49,12 +49,12 @@ class FRouter {
               return Navigator.of(context, rootNavigator: rootNavigator);
             }) {
     if (notFoundRoute != null) {
-      this.register(notFoundRoute);
+      this.register(notFoundRoute!);
     }
   }
 
   FRouter.ofUriTemplates({
-    NavigatorOf navigatorOf,
+    NavigatorOf? navigatorOf,
     this.notFoundRoute,
     this.routeFactory = const DefaultRouterFactory(),
   })  : _routeTree = RouteTree(ParameterExtractorType.uriTemplate),
@@ -62,7 +62,7 @@ class FRouter {
             ((context, rootNavigator) =>
                 Navigator.of(context, rootNavigator: rootNavigator)) {
     if (notFoundRoute != null) {
-      this.register(notFoundRoute);
+      this.register(notFoundRoute!);
     }
   }
 
@@ -75,9 +75,9 @@ class FRouter {
 
   /// Creates an [AppPageRoute] definition whose arguments are [Map<String, dynamic>]
   AppRoute<R, RouteParams> define<R>(String routePath,
-      {String name,
-      @required WidgetHandler<R, RouteParams> handler,
-      TransitionType transitionType}) {
+      {String? name,
+      required WidgetHandler<R, RouteParams?>? handler,
+      TransitionType? transitionType}) {
     return _routeTree.addRoute<R, RouteParams>(
       AppPageRoute(routePath, handler, (_) => RouteParams.of(_),
           name: name,
@@ -88,7 +88,7 @@ class FRouter {
 
   /// Creates a [CompletableAppRoute] definition.
   AppRoute<R, RouteParams> defineCompletable<R>(String routePath,
-      {String name, @required CompletableHandler<R, RouteParams> handler}) {
+      {String? name, required CompletableHandler<R, RouteParams> handler}) {
     return _routeTree.addRoute<R, RouteParams>(
       CompletableAppRoute(routePath, handler, (_) => RouteParams.of(_),
           name: name),
@@ -97,10 +97,10 @@ class FRouter {
 
   /// Creates an [AppPageRoute] definition for the passed [WidgetHandler], using a custom parameter type
   AppRoute<R, P> defineWithParams<R, P extends RouteParams>(String routePath,
-      {@required WidgetHandler<R, P> handler,
-      String name,
-      @required ParameterConverter<P> paramConverter,
-      TransitionType transitionType}) {
+      {required WidgetHandler<R, P?> handler,
+      String? name,
+      required ParameterConverter<P> paramConverter,
+      TransitionType? transitionType}) {
     return _routeTree.addRoute<R, P>(
       AppPageRoute<R, P>(routePath, handler, paramConverter,
           name: name, transitionType: transitionType),
@@ -108,7 +108,7 @@ class FRouter {
   }
 
   /// Finds a defined [AppRoute] for the path value, or null if none could be found
-  AppRouteMatch matchRoute(String path) {
+  AppRouteMatch? matchRoute(String path) {
     return _routeTree.matchRoute(path);
   }
 
@@ -127,7 +127,7 @@ extension RouterExtensions on FRouter {
 
     _log.info(
         "onGenerateRoute: ${settings.name} with arguments ${settings.arguments}");
-    AppRoute appRoute = _routeTree.findRouteByKey(settings.name);
+    AppRoute? appRoute = _routeTree.findRouteByKey(settings.name);
     _log.info(" -> ${settings.name} found by key: ${appRoute != null}");
     dynamic arguments = settings.arguments;
     if (appRoute == null) {
@@ -138,15 +138,16 @@ extension RouterExtensions on FRouter {
           ? " -> Match not found.  Falling back to /notFound"
           : " -> ${settings.name} extracted $match");
 
-      match ??= AppRouteMatch(notFoundRoute, null);
+      match ??= AppRouteMatch(notFoundRoute!, null);
       appRoute = match.route;
       arguments ??= match.parameters;
     }
 
     /// Changed from generate to generateAny - figure this context doesn't care
     /// about type arguments anyway
-    final creator = this.routeFactory.generateAny(appRoute, null, null, null);
-    final route = creator(appRoute.route, appRoute.paramConverter(arguments));
+    final Route<dynamic> Function(String, RouteParams?) creator =
+        this.routeFactory.generateAny(appRoute!, null, null, null);
+    final route = creator(appRoute.route, appRoute.paramConverter!(arguments));
     return route;
   }
 
@@ -155,15 +156,15 @@ extension RouterExtensions on FRouter {
   Future navigateTo(BuildContext context, String path,
       {bool replace = false,
       bool clearStack = false,
-      TransitionType transition,
+      TransitionType? transition,
       Duration transitionDuration = const Duration(milliseconds: 250),
-      RouteTransitionsBuilder transitionBuilder}) {
+      RouteTransitionsBuilder? transitionBuilder}) {
     final match = matchRoute(path);
     if (match?.route == null) {
       // do something
       throw "Route not found";
     } else {
-      return navigateToDynamicRoute(context, match.route,
+      return navigateToDynamicRoute(context, match!.route,
           replace: replace,
           parameters: match.parameters,
           clearStack: clearStack,
@@ -174,17 +175,18 @@ extension RouterExtensions on FRouter {
   }
 
   /// Navigates directly to a route instance, using the provided [parameters].
-  Future<R> navigateToRoute<R, P extends RouteParams>(
+  Future<R?> navigateToRoute<R, P extends RouteParams>(
       BuildContext context, AppRoute<R, P> appRoute,
       {bool replace = false,
-      P parameters,
+      P? parameters,
       bool clearStack = false,
-      TransitionType transition,
+      TransitionType? transition,
       bool rootNavigator = false,
       Duration transitionDuration = const Duration(milliseconds: 250),
-      RouteTransitionsBuilder transitionBuilder}) {
+      RouteTransitionsBuilder? transitionBuilder}) {
     if (appRoute is AppPageRoute<R, P>) {
-      final routeCreator = routeFactory.generate<R, P>(
+      final Route<R?> Function(String, P?) routeCreator =
+          routeFactory.generate<R, P>(
         appRoute,
         appRoute.transitionType,
         transitionDuration,
@@ -194,7 +196,9 @@ extension RouterExtensions on FRouter {
       final navigator = navigatorOf(context, rootNavigator == true);
 
       final route = routeCreator(appRoute.route, parameters);
-      return replace ? navigator.pushReplacement(route) : navigator.push(route);
+      return replace
+          ? navigator.pushReplacement(route as Route<R>)
+          : navigator.push(route as Route<R>);
     } else if (appRoute is CompletableAppRoute<R, P>) {
       return appRoute.handle(context, parameters,
           (BuildContext context, AppRoute route, RouteParams params) {
@@ -206,16 +210,17 @@ extension RouterExtensions on FRouter {
   }
 
   ///
-  Future navigateToDynamicRoute(BuildContext context, AppRoute appRoute,
+  Future navigateToDynamicRoute(BuildContext context, AppRoute? appRoute,
       {bool replace = false,
-      RouteParams parameters,
+      RouteParams? parameters,
       bool clearStack = false,
-      TransitionType transition,
+      TransitionType? transition,
       bool rootNavigator = false,
       Duration transitionDuration = const Duration(milliseconds: 250),
-      RouteTransitionsBuilder transitionBuilder}) {
+      RouteTransitionsBuilder? transitionBuilder}) {
     if (appRoute is AppPageRoute) {
-      final routeCreator = routeFactory.generate(
+      final Route<dynamic> Function(String, RouteParams?) routeCreator =
+          routeFactory.generate(
         appRoute,
         appRoute.transitionType,
         transitionDuration,

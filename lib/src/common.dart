@@ -14,8 +14,8 @@ import 'package:flutter/widgets.dart';
 import 'app_route.dart';
 
 ///
-typedef RouteCreator<T, P extends RouteParams> = Route<T> Function(
-    String name, P parameters);
+typedef RouteCreator<T, P extends RouteParams> = Route<T?> Function(
+    String? name, P? parameters);
 
 typedef RouteExecutor<R> = Future<R> Function();
 
@@ -28,16 +28,16 @@ typedef NavigatorOf = NavigatorState Function(
 abstract class RouterFactory {
   RouteCreator<R, P> generate<R, P extends RouteParams>(
     AppRoute<R, P> appRoute,
-    TransitionType transition,
+    TransitionType? transition,
     Duration transitionDuration,
-    RouteTransitionsBuilder transitionsBuilder,
+    RouteTransitionsBuilder? transitionsBuilder,
   );
 
   RouteCreator generateAny(
     AppRoute appRoute,
-    TransitionType transition,
-    Duration transitionDuration,
-    RouteTransitionsBuilder transitionsBuilder,
+    TransitionType? transition,
+    Duration? transitionDuration,
+    RouteTransitionsBuilder? transitionsBuilder,
   );
 }
 
@@ -47,21 +47,21 @@ typedef SendRoute = Future Function(
 
 /// Used by [CompletableAppRoute]
 typedef CompletableHandler<R, P extends RouteParams> = Future<R> Function(
-    BuildContext context, P parameters, SendRoute sendRoute);
+    BuildContext context, P? parameters, SendRoute sendRoute);
 
 /// Used by [AppPageRoute] Creates a widget, given [P] parameters
 typedef WidgetHandler<R, P> = Widget Function(
-    BuildContext context, P parameters);
+    BuildContext context, P? parameters);
 
 /// Converts dynamic map arguments to a known type [P]
-typedef ParameterConverter<P extends RouteParams> = P Function(
+typedef ParameterConverter<P extends RouteParams> = P? Function(
     dynamic rawInput);
 
 /// Given parameters, produces a link back to this route
 typedef ToRouteUri = String Function(dynamic parameters);
 
 /// Given parameters, produces a title for this route
-typedef ToRouteTitle<P> = String Function(P parameters);
+typedef ToRouteTitle<P> = String? Function(P? parameters);
 
 abstract class RouteParams {
   Map<String, dynamic> toMap();
@@ -83,7 +83,6 @@ abstract class RouteParams {
   }
 
   factory RouteParams.ofId(String id) {
-    assert(id != null);
     return DefaultRouteParams({"id": id});
   }
 
@@ -95,7 +94,7 @@ abstract class RouteParams {
 class DefaultRouteParams implements RouteParams, InternalArgs {
   final Map<String, dynamic> params;
 
-  const DefaultRouteParams([Map<String, dynamic> params])
+  const DefaultRouteParams([Map<String, dynamic>? params])
       : params = params ?? const <String, dynamic>{};
 
   @override
@@ -143,11 +142,11 @@ class RouteNotFoundException implements Exception {
 }
 
 extension AppRouteCastingExtensions<R, P extends RouteParams>
-    on AppRoute<R, P> {
-  AppPageRoute<R, P> asPageRoute() => this as AppPageRoute<R, P>;
+    on AppRoute<R, P>? {
+  AppPageRoute<R, P>? asPageRoute() => this as AppPageRoute<R, P>?;
 
-  CompletableAppRoute<R, P> asCompletableRoute() =>
-      this as CompletableAppRoute<R, P>;
+  CompletableAppRoute<R, P>? asCompletableRoute() =>
+      this as CompletableAppRoute<R, P>?;
 }
 
 /// How path parameters are extracted
@@ -164,9 +163,9 @@ enum ParameterExtractorType {
   restTemplate
 }
 
-extension ParameterExtractorTypeExtensions on ParameterExtractorType {
+extension ParameterExtractorTypeExtensions on ParameterExtractorType? {
   bool isParameter(String input) {
-    if (input == null || input == "") return false;
+    if (input == "") return false;
     if (this == null) return false;
     switch (this) {
       case ParameterExtractorType.uriTemplate:
@@ -179,7 +178,7 @@ extension ParameterExtractorTypeExtensions on ParameterExtractorType {
   }
 
   /// Extracts the parameter name from a path components
-  String extractName(String pathComponent) {
+  String? extractName(String pathComponent) {
     if (!isParameter(pathComponent)) {
       throw InvalidRouteDefinition(code: "invalidComponentFormat");
     }
@@ -195,16 +194,16 @@ extension ParameterExtractorTypeExtensions on ParameterExtractorType {
 }
 
 class InvalidRouteDefinition {
-  final String message;
-  final String route;
-  final String code;
+  final String? message;
+  final String? route;
+  final String? code;
 
   InvalidRouteDefinition({this.code, this.message, this.route});
 }
 
 extension RouteParamsExt on RouteParams {
-  T get<T>(key) {
-    return this["$key"] as T;
+  T? get<T>(key) {
+    return this["$key"] as T?;
   }
 }
 

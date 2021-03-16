@@ -17,7 +17,7 @@ void main() {
     String route = "/users/:id";
     FRouter router = FRouter();
     router.define(route, handler: null);
-    AppRouteMatch match = router.matchRoute(path);
+    AppRouteMatch? match = router.matchRoute(path);
     expect(
         match?.parameters,
         equals({
@@ -31,7 +31,7 @@ void main() {
     String route = "/users/:id";
     FRouter router = FRouter();
     router.define(route, handler: null);
-    AppRouteMatch match = router.matchRoute(path);
+    AppRouteMatch? match = router.matchRoute(path);
     expect(
         match?.parameters,
         equals({
@@ -46,7 +46,7 @@ void main() {
     String route = "/users/create";
     FRouter router = FRouter();
     router.define(route, handler: null);
-    AppRouteMatch match = router.matchRoute(path);
+    AppRouteMatch? match = router.matchRoute(path);
     expect(
         match?.parameters,
         equals({
@@ -63,7 +63,7 @@ void main() {
     String route = "/users/create";
     FRouter router = FRouter();
     router.define(route, handler: null);
-    AppRouteMatch match = router.matchRoute(path);
+    AppRouteMatch? match = router.matchRoute(path);
     expect(
         match?.parameters,
         equals({
@@ -80,7 +80,7 @@ void main() {
     String route = "/users/create";
     FRouter router = FRouter();
     router.define(route, handler: null);
-    AppRouteMatch match = router.matchRoute(path);
+    AppRouteMatch? match = router.matchRoute(path);
     expect(
         match?.parameters,
         equals({
@@ -97,8 +97,8 @@ void main() {
     FRouter router = FRouter();
     router.define(route,
         handler: null, transitionType: TransitionType.inFromRight);
-    AppRouteMatch match = router.matchRoute(path);
+    AppRouteMatch match = router.matchRoute(path)!;
     expect(
-        TransitionType.inFromRight, match.route.asPageRoute().transitionType);
+        TransitionType.inFromRight, match.route.asPageRoute()!.transitionType);
   });
 }

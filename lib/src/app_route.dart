@@ -10,15 +10,15 @@ abstract class AppRoute<R, P extends RouteParams> {
   String get route;
 
   /// Function for creating route uris
-  ToRouteUri get toRouteUri;
+  ToRouteUri? get toRouteUri;
 
   /// Function to convert parameters to the type expected by this route
-  ParameterConverter<P> get paramConverter;
+  ParameterConverter<P>? get paramConverter;
 
-  String routeTitle(P params);
+  String? routeTitle(P params);
 
-  String routeUri(params);
-  String get name;
+  String? routeUri(params);
+  String? get name;
 }
 
 /// An app route:
@@ -33,40 +33,40 @@ class AppPageRoute<R, P extends RouteParams>
   final String route;
 
   @override
-  final String name;
-  final WidgetHandler<R, P> _handler;
+  final String? name;
+  final WidgetHandler<R, P?>? _handler;
   @override
-  final ParameterConverter<P> paramConverter;
-  final ToRouteTitle<P> _toRouteTitle;
+  final ParameterConverter<P>? paramConverter;
+  final ToRouteTitle<P>? _toRouteTitle;
 
   @override
-  final ToRouteUri toRouteUri;
-  final TransitionType transitionType;
+  final ToRouteUri? toRouteUri;
+  final TransitionType? transitionType;
 
   AppPageRoute(
     this.route,
-    WidgetHandler<R, P> handler,
+    WidgetHandler<R, P?>? handler,
     this.paramConverter, {
     this.name,
     this.transitionType,
     this.toRouteUri,
-    ToRouteTitle<P> toRouteTitle,
+    ToRouteTitle<P>? toRouteTitle,
   })  : _handler = handler,
         _toRouteTitle = toRouteTitle;
 
   Widget handleAny(BuildContext context, input) {
-    return _handler(context, input as P);
+    return _handler!(context, input as P?);
   }
 
   Widget handle(BuildContext context, P input) {
-    return _handler(context, input);
+    return _handler!(context, input);
   }
 
   @override
-  String routeTitle(params) {
+  String? routeTitle(params) {
     if (_toRouteTitle == null) return null;
     final p = paramConverter?.call(params) ?? params;
-    return _toRouteTitle(p);
+    return _toRouteTitle!(p);
   }
 
   @override
@@ -79,7 +79,7 @@ class AppPageRoute<R, P extends RouteParams>
         "constructing a reverse URI.  If the parameters don't affect the URL, you can mark "
         "the args with InternalArgs to avoid this error.\n\t Route=$route, params=$params");
 
-    return toRouteUri(RouteParams.of(params));
+    return toRouteUri!(RouteParams.of(params));
   }
 
   @override
@@ -95,13 +95,13 @@ class CompletableAppRoute<R, P extends RouteParams> implements AppRoute<R, P> {
   @override
   final String route;
   @override
-  final String name;
+  final String? name;
   final CompletableHandler<R, P> _handler;
   @override
   final ParameterConverter<P> paramConverter;
-  final ToRouteTitle<P> _toRouteTitle;
+  final ToRouteTitle<P>? _toRouteTitle;
   @override
-  final ToRouteUri toRouteUri;
+  final ToRouteUri? toRouteUri;
 
   CompletableAppRoute(
     this.route,
@@ -109,11 +109,11 @@ class CompletableAppRoute<R, P extends RouteParams> implements AppRoute<R, P> {
     this.paramConverter, {
     this.name,
     this.toRouteUri,
-    ToRouteTitle<P> toRouteTitle,
+    ToRouteTitle<P>? toRouteTitle,
   })  : _handler = handler,
         _toRouteTitle = toRouteTitle;
 
-  Future<R> handle(BuildContext context, P params, SendRoute sender) {
+  Future<R> handle(BuildContext context, P? params, SendRoute sender) {
     return _handler(context, params, sender);
   }
 
@@ -122,16 +122,16 @@ class CompletableAppRoute<R, P extends RouteParams> implements AppRoute<R, P> {
   }
 
   @override
-  String routeTitle(params) {
+  String? routeTitle(params) {
     if (_toRouteTitle == null) return null;
     final p = paramConverter(params);
-    return _toRouteTitle(p);
+    return _toRouteTitle!(p);
   }
 
   @override
-  String routeUri(params) {
+  String? routeUri(params) {
     if (toRouteUri == null) return null;
-    return toRouteUri(RouteParams.of(params));
+    return toRouteUri!(RouteParams.of(params));
   }
 
   @override

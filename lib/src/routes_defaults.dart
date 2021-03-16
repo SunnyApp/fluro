@@ -16,19 +16,20 @@ class DefaultRouterFactory implements RouterFactory {
   @override
   RouteCreator<R, P> generate<R, P extends RouteParams>(
     AppRoute<R, P> appRoute,
-    TransitionType transition,
-    Duration transitionDuration,
-    RouteTransitionsBuilder transitionsBuilder,
+    TransitionType? transition,
+    Duration? transitionDuration,
+    RouteTransitionsBuilder? transitionsBuilder,
   ) {
-    return (String routeName, P parameters) {
+    return (String? routeName, P? parameters) {
       if (appRoute is CompletableAppRoute<R, P>) {
         return CompletableRouteAdapter<R>((context) {
           return appRoute.handleAny(context, parameters,
               (context, route, params) {
             /// This block of code is passed down to the AppRoute, as a way to
             /// invoke a child route from the parent route's context
-            final routeCreator = generateAny(route, TransitionType.native,
-                Duration(milliseconds: 300), null);
+            final Route<dynamic> Function(String?, RouteParams) routeCreator =
+                generateAny(route, TransitionType.native,
+                    Duration(milliseconds: 300), null);
             final r = routeCreator(route.routeTitle(params), params);
             return Navigator.of(context).push(r);
           }).then((_) => _ as R);
@@ -77,7 +78,7 @@ class DefaultRouterFactory implements RouterFactory {
               });
         } else {
           final routeTransitionsBuilder = transition == TransitionType.custom
-              ? transitionsBuilder
+              ? transitionsBuilder!
               : standardTransitionsBuilder(transition);
 
           return PageRouteBuilder<R>(
@@ -91,7 +92,7 @@ class DefaultRouterFactory implements RouterFactory {
                 return Text("Invalid");
               }
             },
-            transitionDuration: transitionDuration,
+            transitionDuration: transitionDuration!,
             transitionsBuilder: routeTransitionsBuilder,
           );
         }
@@ -105,17 +106,18 @@ class DefaultRouterFactory implements RouterFactory {
   @override
   RouteCreator generateAny(
     AppRoute appRoute,
-    TransitionType transition,
-    Duration transitionDuration,
-    RouteTransitionsBuilder transitionsBuilder,
+    TransitionType? transition,
+    Duration? transitionDuration,
+    RouteTransitionsBuilder? transitionsBuilder,
   ) =>
-      generate(appRoute, transition, transitionDuration, transitionsBuilder);
+      generate(appRoute as AppRoute<dynamic, RouteParams>, transition,
+          transitionDuration, transitionsBuilder);
 
   const DefaultRouterFactory();
 }
 
 RouteTransitionsBuilder standardTransitionsBuilder(
-    TransitionType transitionType) {
+    TransitionType? transitionType) {
   return (BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
     if (transitionType == TransitionType.fadeIn) {

@@ -7,42 +7,42 @@ final typeParameters = RegExp("<(.*)>");
 final newLinesPattern = RegExp("\\n");
 
 extension _FluroTypeExtensions on Type {
-  String get name => "$this"
-      .trimAround("_")
+  String? get name => "$this"
+      .trimAround("_")!
       .replaceAllMapped(
         typeParameters,
         (match) => "[${match.group(1).uncapitalize()}]",
       )
       .uncapitalize();
 
-  String get simpleName => _simpleNameOfType(this);
+  String? get simpleName => _simpleNameOfType(this);
 }
 
-String _simpleNameOfType(Type type) {
+String? _simpleNameOfType(Type type) {
   return "$type".replaceAll(typeParameters, '').uncapitalize();
 }
 
-String calculateRoute(final input) {
-  String str;
+String? calculateRoute(final input) {
+  String? str;
   if (input is Type) {
     str = input.simpleName;
   } else {
     str = "$input";
   }
-  return !str.startsWith("/") ? "/$str" : str;
+  return !str!.startsWith("/") ? "/$str" : str;
 }
 
 /// A more advanced route settings that lets us provide more context when routing
 class PathRouteSettings extends RouteSettings implements RouteInformation {
-  final String label;
-  final String route;
-  final String resolvedPath;
-  final RouteParams routeParams;
+  final String? label;
+  final String? route;
+  final String? resolvedPath;
+  final RouteParams? routeParams;
 
   /// Creates data used to construct routes.
   PathRouteSettings({
-    @required dynamic route,
-    @required this.label,
+    required dynamic route,
+    required this.label,
     this.resolvedPath,
     this.routeParams,
   })  : route = calculateRoute(route),
@@ -52,7 +52,7 @@ class PathRouteSettings extends RouteSettings implements RouteInformation {
 
   factory PathRouteSettings.ofAppRoute(
     AppRoute appRoute, {
-    RouteParams routeParams,
+    RouteParams? routeParams,
   }) {
     final resolvedPath = appRoute.routeUri(routeParams);
     return PathRouteSettings(
@@ -77,7 +77,7 @@ class PathRouteSettings extends RouteSettings implements RouteInformation {
   }
 
   @override
-  String get location => resolvedPath ?? route;
+  String? get location => resolvedPath ?? route;
 
   @override
   PathRouteSettings get state => this;

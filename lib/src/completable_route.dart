@@ -24,13 +24,13 @@ class CompletableRouteAdapter<R> extends Route<R> {
     final tf = super.didPush();
     tf.whenComplete(() async {
       try {
-        final result = await invoker(this.navigator.context);
+        final result = await invoker(this.navigator!.context);
         await Future.microtask(() {
-          this.navigator.pop(result);
+          this.navigator!.pop(result);
         });
       } catch (e) {
         await Future.microtask(() {
-          this.navigator.pop();
+          this.navigator!.pop();
         });
       }
     });

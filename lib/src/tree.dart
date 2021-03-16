@@ -9,6 +9,7 @@
 
 import 'package:sunny_fluro/src/common.dart';
 import 'package:flutter/widgets.dart';
+import 'package:dartxx/dartxx.dart';
 import 'package:logging/logging.dart';
 
 import 'app_route.dart';
@@ -24,7 +25,8 @@ const missingRouteName = "/missing";
 
 class AppRouteMatch {
   // constructors
-  AppRouteMatch(this.route, Map<String, dynamic> rawParams)
+  AppRouteMatch(AppRoute<dynamic, RouteParams> this.route,
+      Map<String, dynamic>? rawParams)
       : parameters =
             route.paramConverter?.call(rawParams) ?? RouteParams.of(rawParams);
 
@@ -35,8 +37,8 @@ class AppRouteMatch {
   bool get isMissing => route == null;
 
   // properties
-  final AppRoute route;
-  final RouteParams parameters;
+  final AppRoute? route;
+  final RouteParams? parameters;
 
   @override
   String toString() {
@@ -46,7 +48,7 @@ class AppRouteMatch {
   }
 
   AppRouteMatch.builder(String route,
-      {@required WidgetBuilder builder, String name})
+      {required WidgetBuilder builder, String? name})
       : parameters = null,
         route = AppPageRoute(route, (c, _) => builder(c), (_) => null,
             name: name, toRouteUri: (_) => route);
@@ -73,16 +75,16 @@ class RouteTreeNodeMatch {
   // constructors
   RouteTreeNodeMatch(this.node) : _parameters = <String, dynamic>{};
 
-  RouteTreeNodeMatch.fromMatch(RouteTreeNodeMatch match, this.node)
+  RouteTreeNodeMatch.fromMatch(RouteTreeNodeMatch? match, this.node)
       : _parameters = <String, dynamic>{} {
     // ignore: unused_local_variable
-    var self = this;
+    RouteTreeNodeMatch self = this;
     if (match != null) {
       self += match._parameters;
     }
   }
 
-  RouteTreeNodeMatch operator +(Map<String, dynamic> values) {
+  RouteTreeNodeMatch operator +(Map<String, dynamic>? values) {
     values?.forEach((k, v) {
       this[k] = v;
     });
@@ -123,8 +125,8 @@ class RouteTreeNode {
     this.part,
     this.type, {
     this.parent,
-    List<AppRoute> routes,
-    List<RouteTreeNode> nodes,
+    List<AppRoute>? routes,
+    List<RouteTreeNode>? nodes,
   })  : routes = routes ?? [],
         nodes = nodes ?? [];
 
@@ -133,7 +135,7 @@ class RouteTreeNode {
   final RouteTreeNodeType type;
   final List<AppRoute> routes;
   final List<RouteTreeNode> nodes;
-  final RouteTreeNode parent;
+  final RouteTreeNode? parent;
 
   bool isParameter() => type == RouteTreeNodeType.parameter;
 }
@@ -147,8 +149,8 @@ class RouteTree {
 
   RouteTree(this.parameterType);
 
-  AppRoute findRouteByKey(String key) {
-    return _routesByKey[key];
+  AppRoute? findRouteByKey(String? key) {
+    return _routesByKey[key!];
   }
 
   // addRoute - add a route to the route tree
@@ -175,7 +177,7 @@ class RouteTree {
       path = path.substring(1);
     }
     final pathComponents = path.split('/');
-    RouteTreeNode parent;
+    RouteTreeNode? parent;
     for (int i = 0; i < pathComponents.length; i++) {
       String component = pathComponents[i];
       final node = _nodeForComponent(component, parent) ??
@@ -195,25 +197,26 @@ class RouteTree {
     return route;
   }
 
-  AppRouteMatch matchRoute(String path) {
+  AppRouteMatch? matchRoute(String? path) {
     if (path == null) return null;
     final uri = Uri.parse(path);
     final components =
         path == Navigator.defaultRouteName ? const ["/"] : uri.pathSegments;
 
-    var nodeMatches = <RouteTreeNode, RouteTreeNodeMatch>{};
+    Map<RouteTreeNode, RouteTreeNodeMatch?> nodeMatches =
+        <RouteTreeNode, RouteTreeNodeMatch>{};
     var nodesToCheck = _nodes;
-    RouteTreeNodeMatch match;
+    RouteTreeNodeMatch? match;
     for (final segment in components) {
-      final currentMatches = <RouteTreeNode, RouteTreeNodeMatch>{};
+      final currentMatches = <RouteTreeNode, RouteTreeNodeMatch?>{};
       final nextNodes = <RouteTreeNode>[];
       for (final node in nodesToCheck) {
         bool isMatch = (node.part == segment || node.isParameter());
         if (isMatch) {
-          final parentMatch = nodeMatches[node.parent];
+          final parentMatch = nodeMatches[node.parent!];
           match = RouteTreeNodeMatch.fromMatch(parentMatch, node);
           if (node.isParameter()) {
-            String paramKey = parameterType.extractName(node.part);
+            String? paramKey = parameterType.extractName(node.part);
             match[paramKey] = segment;
           }
 
@@ -232,15 +235,11 @@ class RouteTree {
     if (match != null && uri.queryParametersAll != null) {
       match += uri.queryParametersAll;
     }
-    List<RouteTreeNodeMatch> matches =
-        nodeMatches.values.where((_) => _ != null).toList();
+    List<RouteTreeNodeMatch> matches = nodeMatches.values.notNull();
     for (final match in matches) {
       RouteTreeNode nodeToUse = match.node;
-      _log.fine(
-          "using match: $match, ${nodeToUse?.part}, ${match?._parameters}");
-      if (nodeToUse != null &&
-          nodeToUse.routes != null &&
-          nodeToUse.routes.isNotEmpty) {
+      _log.fine("using match: $match, ${nodeToUse.part}, ${match._parameters}");
+      if (nodeToUse.routes.isNotEmpty) {
         final routes = nodeToUse.routes;
         final routeMatch =
             AppRouteMatch(routes[0], sanitizeParams(match._parameters));
@@ -256,7 +255,7 @@ class RouteTree {
     return _;
   }
 
-  String _printSubTree({RouteTreeNode parent, int level = 0}) {
+  String _printSubTree({RouteTreeNode? parent, int level = 0}) {
     var str = "";
     List<RouteTreeNode> nodes = parent != null ? parent.nodes : _nodes;
     for (RouteTreeNode node in nodes) {
@@ -272,7 +271,7 @@ class RouteTree {
     return str;
   }
 
-  RouteTreeNode _nodeForComponent(String component, RouteTreeNode parent) {
+  RouteTreeNode? _nodeForComponent(String component, RouteTreeNode? parent) {
     List<RouteTreeNode> nodes = _nodes;
     if (parent != null) {
       // search parent for sub-node matches
@@ -295,7 +294,7 @@ class RouteTree {
   }
 }
 
-extension StringPathExt on String {
+extension StringPathExt on String? {
   String toPath() {
     final self = this ?? "/";
     return self.startsWith("/") ? self : "/$self";
@@ -304,13 +303,13 @@ extension StringPathExt on String {
 
 extension RouteTreeNodePathExt on RouteTreeNode {
   String get path {
-    return "${parent?.path ?? ''}${part?.toPath() ?? ''}";
+    return "${parent?.path ?? ''}${part.toPath() ?? ''}";
   }
 
   List<String> get paths {
     return <String>{
       path,
-      for (final child in (nodes ?? <RouteTreeNode>[])) ...child.paths,
+      for (final child in (nodes)) ...child.paths,
     }.toList();
   }
 }

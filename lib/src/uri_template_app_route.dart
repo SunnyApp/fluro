@@ -11,11 +11,11 @@ class UriTemplateAppPageRoute<R, P extends RouteParams>
 
   UriTemplateAppPageRoute(
     this.uriTemplate,
-    WidgetHandler<R, P> handler,
-    ParameterConverter<P> paramConverter, {
-    @required String name,
-    TransitionType transitionType,
-    ToRouteTitle<P> toRouteTitle,
+    WidgetHandler<R, P?> handler,
+    ParameterConverter<P>? paramConverter, {
+    required String? name,
+    TransitionType? transitionType,
+    ToRouteTitle<P>? toRouteTitle,
   }) : super(
           uriTemplate.template,
           handler,
@@ -44,8 +44,8 @@ class UriTemplateCompletableAppRoute<R, P extends RouteParams>
     this.uriTemplate,
     CompletableHandler<R, P> handler,
     ParameterConverter<P> paramConverter, {
-    String name,
-    ToRouteTitle<P> toRouteTitle,
+    String? name,
+    ToRouteTitle<P>? toRouteTitle,
   }) : super(
           uriTemplate.template,
           handler,
@@ -61,11 +61,11 @@ class UriTemplateCompletableAppRoute<R, P extends RouteParams>
 extension RouterBaseExtensions on FRouter {
   /// Creates an [AppPageRoute] definition whose arguments are [Map<String, dynamic>]
   UriTemplateAppPageRoute<R, P> page<R, P extends RouteParams>(
-      String routePath, WidgetHandler<R, P> handler,
-      {ParameterConverter<P> paramConverter,
-      String name,
-      ToRouteTitle<P> toRouteTitle,
-      TransitionType transitionType}) {
+      String routePath, WidgetHandler<R, P?> handler,
+      {ParameterConverter<P>? paramConverter,
+      String? name,
+      ToRouteTitle<P>? toRouteTitle,
+      TransitionType? transitionType}) {
     if (P == RouteParams || P == dynamic) {
       paramConverter ??= (args) => defaultConverter(args) as P;
     }
@@ -86,10 +86,10 @@ extension RouterBaseExtensions on FRouter {
   /// Creates an [AppPageRoute] definition whose arguments are [Map<String, dynamic>]
   UriTemplateAppPageRoute<R, P> simplePage<R, P extends RouteParams>(
       String routePath, Widget handler(),
-      {ParameterConverter<P> paramConverter,
-      String name,
-      ToRouteTitle<P> toRouteTitle,
-      TransitionType transitionType}) {
+      {ParameterConverter<P>? paramConverter,
+      String? name,
+      ToRouteTitle<P>? toRouteTitle,
+      TransitionType? transitionType}) {
     if (P == RouteParams || P == dynamic) {
       paramConverter ??= (args) => defaultConverter(args) as P;
     }
@@ -110,10 +110,10 @@ extension RouterBaseExtensions on FRouter {
   /// Creates an [AppPageRoute] definition whose arguments are [Map<String, dynamic>]
   UriTemplateAppPageRoute<R, P> modal<R, P extends RouteParams>(
     String routePath,
-    WidgetHandler<R, P> handler, {
-    ParameterConverter<P> paramConverter,
-    String name,
-    ToRouteTitle<P> toRouteTitle,
+    WidgetHandler<R, P?> handler, {
+    ParameterConverter<P>? paramConverter,
+    String? name,
+    ToRouteTitle<P>? toRouteTitle,
   }) {
     return page<R, P>(
       routePath,
@@ -129,8 +129,8 @@ extension RouterBaseExtensions on FRouter {
   AppRoute<R, RouteParams> function<R>(
     String routePath,
     CompletableHandler<R, RouteParams> handler, {
-    String name,
-    ToRouteTitle toRouteTitle,
+    String? name,
+    ToRouteTitle? toRouteTitle,
   }) {
     final route = UriTemplateCompletableAppRoute<R, RouteParams>(
       UriTemplate(routePath),
