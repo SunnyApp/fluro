@@ -1,3 +1,7 @@
+## [1.8.0-nullsafe.2]
+ * null ssafety
+bundle updaet
+
 ## [1.7.0+1]
  * Updated minor version
 Updated bundle
