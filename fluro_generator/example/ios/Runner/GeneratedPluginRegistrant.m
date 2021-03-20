@@ -4,10 +4,10 @@
 
 #import "GeneratedPluginRegistrant.h"
 
-#if __has_include(<libphonenumber/LibphonenumberPlugin.h>)
-#import <libphonenumber/LibphonenumberPlugin.h>
+#if __has_include(<libphonenumber2/LibphonenumberPlugin.h>)
+#import <libphonenumber2/LibphonenumberPlugin.h>
 #else
-@import libphonenumber;
+@import libphonenumber2;
 #endif
 
 @implementation GeneratedPluginRegistrant

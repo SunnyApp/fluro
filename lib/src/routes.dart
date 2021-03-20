@@ -7,12 +7,11 @@
  * See LICENSE for distribution and usage details.
  */
 
-import 'package:sunny_fluro/sunny_fluro.dart';
-import 'package:sunny_fluro/src/common.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:sunny_fluro/src/common.dart';
+import 'package:sunny_fluro/sunny_fluro.dart';
 
 import 'app_route.dart';
 
@@ -205,7 +204,7 @@ extension RouterExtensions on FRouter {
         return navigateToDynamicRoute(context, route, parameters: params);
       });
     } else {
-      throw "Invalid route type ${appRoute?.runtimeType ?? 'null'}";
+      throw "Invalid route type ${appRoute.runtimeType}";
     }
   }
 

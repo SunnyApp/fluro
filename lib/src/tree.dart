@@ -54,7 +54,7 @@ class AppRouteMatch {
             name: name, toRouteUri: (_) => route);
 }
 
-Map<String, dynamic> sanitizeParams(Map<String, dynamic> params) {
+Map<String, dynamic> sanitizeParams(Map<String, dynamic>? params) {
   if (params == null) return {};
   return {
     for (final entry in (params.entries))
@@ -232,7 +232,7 @@ class RouteTree {
         return null;
       }
     }
-    if (match != null && uri.queryParametersAll != null) {
+    if (match != null) {
       match += uri.queryParametersAll;
     }
     List<RouteTreeNodeMatch> matches = nodeMatches.values.notNull();
@@ -264,7 +264,7 @@ class RouteTree {
         indent += "    ";
       }
       str += "$indent${node.part}: total routes=${node.routes.length}\n";
-      if (node.nodes != null && node.nodes.isNotEmpty) {
+      if (node.nodes.isNotEmpty) {
         str += "${_printSubTree(parent: node, level: level + 1)}\n";
       }
     }
@@ -303,7 +303,7 @@ extension StringPathExt on String? {
 
 extension RouteTreeNodePathExt on RouteTreeNode {
   String get path {
-    return "${parent?.path ?? ''}${part.toPath() ?? ''}";
+    return "${parent?.path ?? ''}${part.toPath()}";
   }
 
   List<String> get paths {

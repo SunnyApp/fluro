@@ -110,8 +110,7 @@ class DefaultRouterFactory implements RouterFactory {
     Duration? transitionDuration,
     RouteTransitionsBuilder? transitionsBuilder,
   ) =>
-      generate(appRoute as AppRoute<dynamic, RouteParams>, transition,
-          transitionDuration, transitionsBuilder);
+      generate(appRoute, transition, transitionDuration, transitionsBuilder);
 
   const DefaultRouterFactory();
 }

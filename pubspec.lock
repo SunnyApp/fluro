@@ -99,13 +99,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
+  dartx:
+    dependency: transitive
+    description:
+      name: dartx
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.0"
   dartxx:
     dependency: "direct main"
     description:
       name: dartxx
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.4+6"
+    version: "0.4.5-nullsafety.3"
   equatable:
     dependency: transitive
     description:
@@ -127,6 +134,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.2.1"
+  flexidate:
+    dependency: transitive
+    description:
+      name: flexidate
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.5-nullsafety.2"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -386,7 +400,7 @@ packages:
       name: sunny_dart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.0+7"
+    version: "0.8.2+2"
   term_glyph:
     dependency: transitive
     description:
@@ -415,6 +429,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.15"
+  time:
+    dependency: transitive
+    description:
+      name: time
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   timezone:
     dependency: transitive
     description:

@@ -6,10 +6,10 @@ part 'path_and_entity.g.dart';
 
 @routeParams()
 abstract class _PathAndEntity {
-  final String routeId;
-  final Entity entity;
+  final String? routeId;
+  final Entity? entity;
 
-  _PathAndEntity({String routeId, this.entity})
+  _PathAndEntity({String? routeId, this.entity})
       : assert(routeId != null || entity?.id != null, "Must provide id"),
         routeId = routeId ?? entity?.id;
 }
@@ -19,12 +19,12 @@ abstract class _EntityPage extends StatelessWidget implements _PathAndEntity {
   @delegate()
   final _PathAndEntity _params;
 
-  const _EntityPage(@flatten("PathAndEntity") this._params, {Key key})
+  const _EntityPage(@flatten("PathAndEntity") this._params, {Key? key})
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Text(_params.routeId);
+  Widget build(BuildContext? context) {
+    return Text(_params.routeId!);
   }
 }
 

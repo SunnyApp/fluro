@@ -19,7 +19,7 @@ extension StringExt on String? {
     }
 
     final chars = characters is List<String> ? characters : ["$characters"];
-    chars?.forEach((c) {
+    chars.forEach((c) {
       if (trimEnd && manipulated!.endsWith(c)) {
         manipulated = manipulated!.substring(0, manipulated!.length - c.length);
       }

@@ -4,7 +4,7 @@ import 'package:flutter_degen/flutter_degen.dart';
 import 'package:sunny_fluro/annotations.dart';
 import 'package:source_gen/source_gen.dart';
 
-String fieldName(Element element) {
+String? fieldName(Element element) {
   return element.name;
 }
 
@@ -20,17 +20,7 @@ class RouteParamsGenerator extends GeneratorForAnnotation<routeParams> {
 
     /// First letter is underscore
     final concreteName = element.name.substring(1);
-    final fieldType = cls;
 
-    final doesApply = (Element element) {
-      return true;
-    };
-
-    var withStr = "";
-    // if (pathParams.isNotEmpty) {
-    //   withStr +=
-    //       "with ${pathParams.map((e) => "_${e.getDisplayString(withNullability: false)}Mixin").join(", ")} ";
-    // }
     mixin += [
       "class $concreteName extends ${element.name} implements RouteParams {",
     ];

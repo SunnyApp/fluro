@@ -11,8 +11,8 @@ abstract class __PathAndEntityDelegate {
 }
 
 mixin __PathAndEntityMixin implements __PathAndEntityDelegate {
-  String get routeId => _params.routeId;
-  Entity get entity => _params.entity;
+  String? get routeId => _params.routeId;
+  Entity? get entity => _params.entity;
 }
 
 // **************************************************************************
@@ -21,9 +21,9 @@ mixin __PathAndEntityMixin implements __PathAndEntityDelegate {
 
 class EntityPage extends _EntityPage with __PathAndEntityMixin {
   EntityPage({
-    String routeId,
-    Entity entity,
-    Key key,
+    String? routeId,
+    Entity? entity,
+    Key? key,
   }) : super(
             PathAndEntity(
               routeId: routeId,
@@ -38,8 +38,8 @@ class EntityPage extends _EntityPage with __PathAndEntityMixin {
 
 class PathAndEntity extends _PathAndEntity implements RouteParams {
   PathAndEntity({
-    String routeId,
-    Entity entity,
+    String? routeId,
+    Entity? entity,
   }) : super(routeId: routeId, entity: entity);
 
   @override
@@ -62,12 +62,12 @@ class PathAndEntity extends _PathAndEntity implements RouteParams {
     };
   }
 
-  static PathAndEntity of(input) {
+  static PathAndEntity? of(input) {
     if (input is PathAndEntity) return input;
     if (input == null) return null;
     return PathAndEntity(
-      routeId: input["routeId"] as String,
-      entity: input["entity"] as Entity,
+      routeId: input["routeId"] as String?,
+      entity: input["entity"] as Entity?,
     );
   }
 }

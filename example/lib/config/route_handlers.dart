@@ -56,7 +56,7 @@ final CompletableHandler demoFunctionHandler =
         actions: <Widget>[
           Padding(
             padding: EdgeInsets.only(bottom: 8.0, right: 8.0),
-            child: FlatButton(
+            child: ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop(true);
               },

@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import '../../helpers/color_helpers.dart';
 
 class DemoSimpleComponent extends StatelessWidget {
-  DemoSimpleComponent(
+  const DemoSimpleComponent(
       {this.message = "Testing",
       this.color = const Color(0xFFFFFFFF),
       this.result});
@@ -47,11 +47,7 @@ class DemoSimpleComponent extends StatelessWidget {
             padding: EdgeInsets.only(top: 15.0),
             child: ConstrainedBox(
               constraints: BoxConstraints(minHeight: 42.0),
-              child: FlatButton(
-                highlightColor:
-                    ColorHelpers.blackOrWhiteContrastColor(color).withAlpha(17),
-                splashColor:
-                    ColorHelpers.blackOrWhiteContrastColor(color).withAlpha(34),
+              child: ElevatedButton(
                 onPressed: () {
                   if (result == null) {
                     Navigator.pop(context);

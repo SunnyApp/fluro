@@ -18,6 +18,7 @@ abstract class AppRoute<R, P extends RouteParams> {
   String? routeTitle(P params);
 
   String? routeUri(params);
+
   String? get name;
 }
 
@@ -90,16 +91,28 @@ class AppPageRoute<R, P extends RouteParams>
 
 abstract class InternalArgs {}
 
-/// The details of the route are opaque, it manages everything internally
+/// The details of the route are opaque, all the transitions are managed internally
+/// and a future is returned.
 class CompletableAppRoute<R, P extends RouteParams> implements AppRoute<R, P> {
+  /// The uri or name of hte route
   @override
   final String route;
+
+  /// The friendly name of the route
   @override
   final String? name;
+
+  /// Callback when the route is invoked
   final CompletableHandler<R, P> _handler;
+
+  /// Used to convert to typed parameters
   @override
   final ParameterConverter<P> paramConverter;
+
+  /// Extracts a detailed title from the route
   final ToRouteTitle<P>? _toRouteTitle;
+
+  /// Builds a route uri for given parameters
   @override
   final ToRouteUri? toRouteUri;
 

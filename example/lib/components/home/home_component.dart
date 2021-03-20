@@ -57,9 +57,7 @@ class HomeComponentState extends State<HomeComponent> {
           opacity: _deepLinkOpacity,
           duration: Duration(milliseconds: 250),
           child: Center(
-            child: FlatButton(
-              highlightColor: const Color(0x11FFFFFF),
-              splashColor: const Color(0x22FFFFFF),
+            child: ElevatedButton(
               onPressed: () {
                 if (_deepLinkOpacity == 1.0) {
                   Timer(Duration(milliseconds: 2000), () {
@@ -161,10 +159,10 @@ class HomeComponentState extends State<HomeComponent> {
       padding: EdgeInsets.all(4.0),
       child: Container(
         height: 42.0,
-        child: FlatButton(
-          color: const Color(0x22FFFFFF),
-          highlightColor: const Color(0x11FFFFFF),
-          splashColor: const Color(0x22FFFFFF),
+        child: ElevatedButton(
+          onPressed: () {
+            tappedMenuButton(context, key);
+          },
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -189,9 +187,6 @@ class HomeComponentState extends State<HomeComponent> {
               )
             ],
           ),
-          onPressed: () {
-            tappedMenuButton(context, key);
-          },
         ),
       ),
     );
