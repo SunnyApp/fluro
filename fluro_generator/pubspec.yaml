@@ -1,7 +1,7 @@
 name: sunny_fluro_generator
 description: >
   A generator that assists in creating typed routes and parameters
-version: 1.7.0+1
+version: 1.8.0-nullsafe.2
 homepage: https://github.com/SunnyApp/fluro/fluro_generator
 
 environment:
