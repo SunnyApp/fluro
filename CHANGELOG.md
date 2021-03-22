@@ -1,3 +1,6 @@
+## [1.8.0-nullsafe.4]
+ * Fixing issue from newer dartxx
+
 ## [1.8.0-nullsafe.3]
  * Changes for sunny_lifecycle
 Updated generator version
