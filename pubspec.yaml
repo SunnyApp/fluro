@@ -1,5 +1,5 @@
 name: sunny_fluro
-version: 1.8.0-nullsafe.2
+version: 1.8.0-nullsafe.3
 homepage: https://github.com/SunnyApp/fluro
 description: Sunny Fluro is a fork of the popular fluro router for Flutter that adds the option for typed routes\n
 environment: 

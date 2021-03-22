@@ -1,3 +1,8 @@
+## [1.8.0-nullsafe.3]
+ * Changes for sunny_lifecycle
+Updated generator version
+Updating to null-safety
+
 ## [1.8.0-nullsafe.2]
  * null ssafety
 bundle updaet
