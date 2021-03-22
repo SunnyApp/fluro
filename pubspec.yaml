@@ -7,9 +7,9 @@ environment:
 dependencies: 
   logging: ^1.0.0
   pedantic: ^1.11.0
-  dartxx: ^0.4.5-nullsafety.3
+  dartxx: ^0.4.5-nullsafety.8
   uri: ^1.0.0
-  sunny_dart: ^0.8.2+2
+  sunny_dart: ^0.8.3+3
   flutter: 
     sdk: flutter
 dev_dependencies: 

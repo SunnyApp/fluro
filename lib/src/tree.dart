@@ -235,7 +235,7 @@ class RouteTree {
     if (match != null) {
       match += uri.queryParametersAll;
     }
-    List<RouteTreeNodeMatch> matches = nodeMatches.values.notNull();
+    List<RouteTreeNodeMatch> matches = nodeMatches.values.notNullList();
     for (final match in matches) {
       RouteTreeNode nodeToUse = match.node;
       _log.fine("using match: $match, ${nodeToUse.part}, ${match._parameters}");

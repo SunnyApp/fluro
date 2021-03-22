@@ -112,7 +112,7 @@ packages:
       name: dartxx
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.5-nullsafety.3"
+    version: "0.4.5-nullsafety.8"
   equatable:
     dependency: transitive
     description:
@@ -179,6 +179,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.3+1"
+  info_x:
+    dependency: transitive
+    description:
+      name: info_x
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.4-nullsafety.2"
   intl:
     dependency: transitive
     description:
@@ -400,7 +407,7 @@ packages:
       name: sunny_dart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.2+2"
+    version: "0.8.3+3"
   term_glyph:
     dependency: transitive
     description:
@@ -463,7 +470,7 @@ packages:
       name: uuid
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.2"
   vector_math:
     dependency: transitive
     description:
@@ -508,4 +515,4 @@ packages:
     version: "2.2.1"
 sdks:
   dart: ">=2.12.0 <3.0.0"
-  flutter: ">=1.10.0"
+  flutter: ">=1.17.0"
