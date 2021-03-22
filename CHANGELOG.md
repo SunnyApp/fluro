@@ -1,3 +1,6 @@
+## [1.8.0+1]
+ * Minor bump
+
 ## [1.8.0-nullsafe.4]
  * Fixing issue from newer dartxx
 
