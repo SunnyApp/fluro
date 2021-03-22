@@ -107,7 +107,7 @@ class FRouter {
   }
 
   /// Finds a defined [AppRoute] for the path value, or null if none could be found
-  AppRouteMatch? matchRoute(String path) {
+  AppRouteMatch? matchRoute(String? path) {
     return _routeTree.matchRoute(path);
   }
 

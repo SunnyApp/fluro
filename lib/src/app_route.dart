@@ -15,7 +15,7 @@ abstract class AppRoute<R, P extends RouteParams> {
   /// Function to convert parameters to the type expected by this route
   ParameterConverter<P>? get paramConverter;
 
-  String? routeTitle(P params);
+  String? routeTitle([P? params]);
 
   String? routeUri(params);
 
@@ -64,7 +64,7 @@ class AppPageRoute<R, P extends RouteParams>
   }
 
   @override
-  String? routeTitle(params) {
+  String? routeTitle([params]) {
     if (_toRouteTitle == null) return null;
     final p = paramConverter?.call(params) ?? params;
     return _toRouteTitle!(p);
@@ -135,7 +135,7 @@ class CompletableAppRoute<R, P extends RouteParams> implements AppRoute<R, P> {
   }
 
   @override
-  String? routeTitle(params) {
+  String? routeTitle([params]) {
     if (_toRouteTitle == null) return null;
     final p = paramConverter(params);
     return _toRouteTitle!(p);
