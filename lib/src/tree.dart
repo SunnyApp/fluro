@@ -213,7 +213,7 @@ class RouteTree {
       for (final node in nodesToCheck) {
         bool isMatch = (node.part == segment || node.isParameter());
         if (isMatch) {
-          final parentMatch = nodeMatches[node.parent!];
+          final parentMatch = nodeMatches[node.parent];
           match = RouteTreeNodeMatch.fromMatch(parentMatch, node);
           if (node.isParameter()) {
             String? paramKey = parameterType.extractName(node.part);
