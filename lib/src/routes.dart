@@ -118,6 +118,18 @@ class FRouter {
 }
 
 extension RouterExtensions on FRouter {
+  /// Whether this router handles the defined route
+  bool handlesRoute(String route, {bool calculate = false}) {
+    final foundRoute = _routeTree.findRouteByKey(route);
+    if (foundRoute != null ||
+        !calculate ||
+        (route.contains('{') && route.contains('}'))) {
+      return foundRoute != null;
+    }
+
+    return _routeTree.matchRoute(route) != null;
+  }
+
   /// This extension allows the router to be integrated into [Navigator], eg:
   /// ```onGenerateRoute: routes.onGenerateRoute```
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
