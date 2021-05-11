@@ -1,3 +1,6 @@
+## [1.8.0+3]
+ * Adding helper function
+
 ## [1.8.0+2]
  * Updated errant null check
 
