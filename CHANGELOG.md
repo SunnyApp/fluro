@@ -1,3 +1,7 @@
+## [1.9.0+1]
+ * Adding missing file
+Updated dependencies
+
 ## [1.8.0+3]
  * Adding helper function
 
