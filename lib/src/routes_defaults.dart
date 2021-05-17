@@ -92,7 +92,8 @@ class DefaultRouterFactory implements RouterFactory {
                 return Text("Invalid");
               }
             },
-            transitionDuration: transitionDuration!,
+            transitionDuration:
+                transitionDuration ?? Duration(milliseconds: 300),
             transitionsBuilder: routeTransitionsBuilder,
           );
         }

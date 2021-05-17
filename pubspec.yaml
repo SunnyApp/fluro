@@ -1,18 +1,18 @@
 name: sunny_fluro
-version: 1.8.0+3
+version: 1.9.0
 homepage: https://github.com/SunnyApp/fluro
 description: Sunny Fluro is a fork of the popular fluro router for Flutter that adds the option for typed routes\n
 environment: 
   sdk: '>=2.12.0 <3.0.0'
 dependencies: 
-  logging: ^1.0.0
+  logging: ^1.0.1
   pedantic: ^1.11.0
   dartxx: ^0.5.0+2
   uri: ^1.0.0
   flutter: 
     sdk: flutter
 dev_dependencies: 
-  test: any
+  test: ^1.16.5
   flutter_test: 
     sdk: flutter
 flutter: 
